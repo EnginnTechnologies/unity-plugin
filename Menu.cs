@@ -8,9 +8,9 @@ namespace Enginn
   {
 
     [MenuItem("Enginn/Characters")]
-    public static void fetchCharacters()
+    public static void FetchCharacters()
     {
-      Character[] characters = Api.getCharacters();
+      Character[] characters = Api.GetCharacters();
       Debug.Log($"Characters count: {characters.Length}");
       foreach (Character character in characters)
       {
