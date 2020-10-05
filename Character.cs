@@ -15,10 +15,4 @@ namespace Enginn
 
   }
 
-  [System.Serializable]
-  public class Characters
-  {
-    public Character[] characters;
-  }
-
 }

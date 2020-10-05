@@ -8,17 +8,25 @@ namespace Enginn
   public class Api
   {
 
-    static public Character[] getCharacters() {
-      var client = new WebClient();
-      var apiKey = Settings.getApiKey();
-      client.Headers.Add("Authorization", $"Bearer {apiKey}");
-      var response = client.DownloadString("http://localhost:3000/api/v1/characters");
-      var json = "{\"characters\":" + response + "}";
-      var result = JsonUtility.FromJson<Characters>(json);
+    private const String BaseUrl = "http://localhost:3000/api/v1";
 
-      return result.characters;
+    public static Character[] getCharacters() {
+      var response = newClient().DownloadString($"{BaseUrl}/characters");
+      return JsonUtility.FromJson<ApiResults<Character>>(response).objects;
     }
 
+    private static WebClient newClient() {
+      var client = new WebClient();
+      client.Headers.Add("Authorization", $"Bearer {Settings.apiKey}");
+      return client;
+    }
+
+  }
+
+  [Serializable]
+  internal class ApiResults<T>
+  {
+    public T[] objects;
   }
 
 }
