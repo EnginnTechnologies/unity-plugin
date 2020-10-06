@@ -30,6 +30,18 @@ namespace Enginn
       window.Show();
     }
 
+    public static void EditCharacter(Character character)
+    {
+
+      // Get existing open window or if none, make a new one
+      EditCharacterWindow window = (EditCharacterWindow)EditorWindow.GetWindow(
+        typeof(EditCharacterWindow)
+      );
+      Character clone = character.ShallowCopy();
+      window.SetCharacter(clone);
+      window.Show();
+    }
+
   }
 
 }

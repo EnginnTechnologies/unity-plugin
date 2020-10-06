@@ -55,10 +55,21 @@ namespace Enginn
       return result;
     }
 
+    public Character ShallowCopy()
+    {
+       return (Character) this.MemberwiseClone();
+    }
+
     public bool Create()
     {
       Api.CreateCharacter(this);
       return id > 0;
+    }
+
+    public bool Update()
+    {
+      Api.UpdateCharacter(this);
+      return errors.Count < 1;
     }
 
   }

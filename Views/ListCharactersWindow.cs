@@ -24,6 +24,11 @@ namespace Enginn
       foreach (Character character in characters)
       {
         GUILayout.Label($"<b>{character.name}</b> #{character.id}", style);
+
+        if(GUILayout.Button("Edit"))
+        {
+          Router.EditCharacter(character);
+        }
       }
 
       if(GUILayout.Button("Refresh"))

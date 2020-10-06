@@ -39,6 +39,30 @@ namespace Enginn
       }
     }
 
+    public static void UpdateCharacter(Character character) {
+      var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
+      var response = NewClient().UploadString(
+        $"{BaseUrl}/characters/{character.id}",
+        WebRequestMethods.Http.Put,
+        payload
+      );
+      Debug.Log($"API response: {response}");
+      var apiResponse = JsonUtility.FromJson<ApiResponse<Character>>(response);
+
+      switch (apiResponse.status)
+      {
+        case 200:
+          character.updated_at = apiResponse.result.updated_at;
+          break;
+        case 422:
+          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          character.SetErrors(apiResponse.GetErrorsDictionnary());
+          break;
+        default:
+          throw new WebException($"API error {apiResponse.status}");
+      }
+    }
+
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
