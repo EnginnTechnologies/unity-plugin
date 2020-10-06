@@ -9,17 +9,6 @@ namespace Enginn
   {
     Character character = new Character();
 
-    // Add menu named "My Window" to the Window menu
-    [MenuItem("Enginn/Characters/New")]
-    static void Init()
-    {
-      // Get existing open window or if none, make a new one:
-      CreateCharacterWindow window = (CreateCharacterWindow)EditorWindow.GetWindow(
-        typeof(CreateCharacterWindow)
-      );
-      window.Show();
-    }
-
     void OnGUI()
     {
       GUILayout.Label("New Character", EditorStyles.boldLabel);

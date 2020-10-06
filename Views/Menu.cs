@@ -8,36 +8,54 @@ namespace Enginn
   public class Menu
   {
 
-    [MenuItem("Enginn/Characters/Fetch")]
-    public static void FetchCharacters()
+    [MenuItem("Enginn/Characters/List")]
+    static void ListCharacters()
     {
-      Character[] characters = Api.GetCharacters();
-      Debug.Log($"Characters count: {characters.Length}");
-      foreach (Character character in characters)
-      {
-        Debug.Log($"Character #{character.id}: {character.name}");
-      }
+      // Debug.Log("[Menu] ListCharacters");
+      Router.ListCharacters();
     }
 
-    [MenuItem("Enginn/Test/Character creation success")]
-    public static void CreateCharacterSuccess()
+    [MenuItem("Enginn/Characters/New")]
+    static void NewCharacter()
     {
-      Character character = new Character();
-      character.name = $"From Unity {DateTime.Now.ToString("yyyyMMddHHmmssffff")}";
-      bool created = character.Create();
-      Debug.Log($"Response: {created}");
-      Debug.Log($"Character: {JsonUtility.ToJson(character)}");
+      // Debug.Log("[Menu] NewCharacter");
+      Router.NewCharacter();
     }
 
-    [MenuItem("Enginn/Test/Character creation error")]
-    public static void CreateCharacterError()
-    {
-      Character character = new Character();
-      bool created = character.Create();
-      Debug.Log($"Response: {created}");
-      Debug.Log($"Character: {JsonUtility.ToJson(character)}");
-      Debug.Log($"Character errors: {character.GetErrorsAsJson()}");
-    }
+    // ------------------------------------------------------------------------
+    // TESTS
+    // ------------------------------------------------------------------------
+
+    // [MenuItem("Enginn/Characters/Fetch")]
+    // public static void FetchCharacters()
+    // {
+    //   Character[] characters = Api.GetCharacters();
+    //   Debug.Log($"Characters count: {characters.Length}");
+    //   foreach (Character character in characters)
+    //   {
+    //     Debug.Log($"Character #{character.id}: {character.name}");
+    //   }
+    // }
+
+    // [MenuItem("Enginn/Test/Character creation success")]
+    // public static void CreateCharacterSuccess()
+    // {
+    //   Character character = new Character();
+    //   character.name = $"From Unity {DateTime.Now.ToString("yyyyMMddHHmmssffff")}";
+    //   bool created = character.Create();
+    //   Debug.Log($"Response: {created}");
+    //   Debug.Log($"Character: {JsonUtility.ToJson(character)}");
+    // }
+
+    // [MenuItem("Enginn/Test/Character creation error")]
+    // public static void CreateCharacterError()
+    // {
+    //   Character character = new Character();
+    //   bool created = character.Create();
+    //   Debug.Log($"Response: {created}");
+    //   Debug.Log($"Character: {JsonUtility.ToJson(character)}");
+    //   Debug.Log($"Character errors: {character.GetErrorsAsJson()}");
+    // }
 
   }
 
