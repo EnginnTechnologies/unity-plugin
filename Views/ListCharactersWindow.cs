@@ -29,6 +29,11 @@ namespace Enginn
         {
           Router.EditCharacter(character);
         }
+
+        if(GUILayout.Button("Delete"))
+        {
+          Router.DestroyCharacter(character);
+        }
       }
 
       if(GUILayout.Button("Refresh"))

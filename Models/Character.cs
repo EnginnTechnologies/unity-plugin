@@ -72,6 +72,12 @@ namespace Enginn
       return errors.Count < 1;
     }
 
+    public bool Destroy()
+    {
+      Api.DestroyCharacter(this);
+      return errors.Count < 1;
+    }
+
   }
 
 }

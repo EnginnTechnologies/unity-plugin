@@ -42,6 +42,17 @@ namespace Enginn
       window.Show();
     }
 
+    public static void DestroyCharacter(Character character)
+    {
+
+      // Get existing open window or if none, make a new one
+      DestroyCharacterWindow window = (DestroyCharacterWindow)EditorWindow.GetWindow(
+        typeof(DestroyCharacterWindow)
+      );
+      window.SetCharacter(character);
+      window.Show();
+    }
+
   }
 
 }
