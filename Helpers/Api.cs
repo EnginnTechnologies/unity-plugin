@@ -88,7 +88,7 @@ namespace Enginn
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-      client.Headers.Add("Authorization", $"Bearer {Settings.apiKey}");
+      client.Headers.Add("Authorization", $"Bearer {EditorSettings.apiKey}");
       return client;
     }
 

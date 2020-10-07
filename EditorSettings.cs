@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Enginn
 {
 
-  public class Settings
+  public class EditorSettings
   {
 
     private const string API_KEY_PREF_KEY = "EnginnApiKey";
