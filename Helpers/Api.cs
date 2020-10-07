@@ -11,16 +11,14 @@ namespace Enginn
   public class Api
   {
 
-    private const String BaseUrl = "http://localhost:3000/api/v1";
-
     public static Character[] GetCharacters() {
-      var response = NewClient().DownloadString($"{BaseUrl}/characters");
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/characters");
       return JsonUtility.FromJson<ApiResponse<Character[]>>(response).result;
     }
 
     public static void CreateCharacter(Character character) {
       var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
-      var response = NewClient().UploadString($"{BaseUrl}/characters", payload);
+      var response = NewClient().UploadString($"{GetApiBaseUrl()}/characters", payload);
       Debug.Log($"API response: {response}");
       var apiResponse = JsonUtility.FromJson<ApiResponse<Character>>(response);
 
@@ -42,7 +40,7 @@ namespace Enginn
     public static void UpdateCharacter(Character character) {
       var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
       var response = NewClient().UploadString(
-        $"{BaseUrl}/characters/{character.id}",
+        $"{GetApiBaseUrl()}/characters/{character.id}",
         WebRequestMethods.Http.Put,
         payload
       );
@@ -65,7 +63,7 @@ namespace Enginn
 
     public static void DestroyCharacter(Character character) {
       var response = NewClient().UploadString(
-        $"{BaseUrl}/characters/{character.id}",
+        $"{GetApiBaseUrl()}/characters/{character.id}",
         "DELETE",
         ""
       );
@@ -85,10 +83,15 @@ namespace Enginn
       }
     }
 
+    private static string GetApiBaseUrl()
+    {
+      return EditorSettings.GetApiBaseUrl();
+    }
+
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-      client.Headers.Add("Authorization", $"Bearer {EditorSettings.apiKey}");
+      client.Headers.Add("Authorization", $"Bearer {ProjectSettings.GetProjectApiToken()}");
       return client;
     }
 

@@ -14,7 +14,7 @@ namespace Enginn
     public const string k_ProjectSettingsPath = "Assets/EnginnSettings.asset";
 
     [SerializeField]
-    private int m_ProjectId;
+    private string m_ProjectApiToken;
 
     internal static ProjectSettings GetOrCreateSettings()
     {
@@ -22,7 +22,7 @@ namespace Enginn
       if (settings == null)
       {
         settings = ScriptableObject.CreateInstance<ProjectSettings>();
-        settings.m_ProjectId = 0;
+        settings.m_ProjectApiToken = "";
         AssetDatabase.CreateAsset(settings, k_ProjectSettingsPath);
         AssetDatabase.SaveAssets();
       }
@@ -33,6 +33,11 @@ namespace Enginn
     {
       return new SerializedObject(GetOrCreateSettings());
     }
+
+    public static string GetProjectApiToken()
+    {
+      return GetSerializedSettings().FindProperty("m_ProjectApiToken").stringValue;
+    }
   }
 
   // Create ProjectSettingsProvider by deriving from SettingsProvider:
@@ -42,7 +47,7 @@ namespace Enginn
 
     class Styles
     {
-      public static GUIContent projectId = new GUIContent("Project ID");
+      public static GUIContent projectId = new GUIContent("Project API key");
     }
 
     // const string k_ProjectSettingsPath = "ProjectSettings/EnginnSettings.asset";
@@ -59,15 +64,15 @@ namespace Enginn
     {
       // Debug.Log("[ProjectSettingsProvider] OnGUI");
       // Use IMGUI to display UI:
-      var m_ProjectId = m_ProjectSettings.FindProperty("m_ProjectId");
-      EditorGUILayout.PropertyField(m_ProjectId, Styles.projectId);//m_ProjectId.intValue =
+      var m_ProjectApiToken = m_ProjectSettings.FindProperty("m_ProjectApiToken");
+      EditorGUILayout.PropertyField(m_ProjectApiToken, Styles.projectId);
       DoSave();
     }
 
     private void DoSave()
     {
       Debug.Log("[ProjectSettingsProvider] DoSave");
-      Debug.Log($"-> {m_ProjectSettings.FindProperty("m_ProjectId").intValue}");
+      Debug.Log($"-> {m_ProjectSettings.FindProperty("m_ProjectApiToken").stringValue}");
       m_ProjectSettings.ApplyModifiedProperties();
       AssetDatabase.SaveAssets();
     }
