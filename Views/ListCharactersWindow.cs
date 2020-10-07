@@ -10,13 +10,13 @@ namespace Enginn
 
     public void FetchCharacters()
     {
-      Debug.Log("[ListCharactersWindow] FetchCharacters");
+      // Debug.Log("[ListCharactersWindow] FetchCharacters");
       characters = Api.GetCharacters();
     }
 
     void OnGUI()
     {
-      Debug.Log("[ListCharactersWindow] OnGUI");
+      // Debug.Log("[ListCharactersWindow] OnGUI");
       GUILayout.Label("My Characters", EditorStyles.boldLabel);
 
       GUIStyle style = new GUIStyle();
