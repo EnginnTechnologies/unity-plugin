@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -12,12 +13,15 @@ namespace Enginn
   {
 
     public int id;
+    public string avatar_url;
     public string name;
     public string created_at;
     public string updated_at;
     public int project_id;
 
     private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
+
+    public Texture2D avatar;
 
     public void ClearErrors()
     {
@@ -76,6 +80,17 @@ namespace Enginn
     {
       Api.DestroyCharacter(this);
       return errors.Count < 1;
+    }
+
+    public void DownloadAvatar()
+    {
+      if (String.IsNullOrEmpty(avatar_url))
+      {
+        // Debug.Log("Character has no avatar");
+      } else {
+        // Debug.Log($"Character has avatar {character.avatar_url}");
+        avatar = Api.DownloadImage(avatar_url);
+      }
     }
 
   }

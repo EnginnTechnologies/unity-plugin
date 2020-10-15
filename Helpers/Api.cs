@@ -83,6 +83,15 @@ namespace Enginn
       }
     }
 
+    public static Texture2D DownloadImage(string url) {
+      Debug.Log($"[Api] DownloadImage {url}");
+      var client = new WebClient();
+      byte[] data = client.DownloadData(url);
+      Texture2D texture = new Texture2D(2, 2);
+      texture.LoadImage(data);
+      return texture;
+    }
+
     private static string GetApiBaseUrl()
     {
       return EditorSettings.GetApiBaseUrl();

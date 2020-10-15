@@ -12,6 +12,10 @@ namespace Enginn
     {
       // Debug.Log("[ListCharactersWindow] FetchCharacters");
       characters = Api.GetCharacters();
+      foreach (Character character in characters)
+      {
+        character.DownloadAvatar();
+      }
     }
 
     void OnGUI()
@@ -23,6 +27,12 @@ namespace Enginn
       style.richText = true;
       foreach (Character character in characters)
       {
+        if (character.avatar != null)
+        {
+          Rect rect = EditorGUILayout.GetControlRect(false, 200);
+          GUI.DrawTexture(rect, character.avatar, ScaleMode.ScaleToFit);
+        }
+
         GUILayout.Label($"<b>{character.name}</b> #{character.id}", style);
 
         if(GUILayout.Button("Edit"))
@@ -50,7 +60,6 @@ namespace Enginn
       {
         Router.NewCharacter();
       }
-
     }
   }
 
