@@ -39,6 +39,8 @@ namespace Enginn
 
     public static void UpdateCharacter(Character character) {
       var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
+
+      Debug.Log($"Character payload: {payload}");
       var response = NewClient().UploadString(
         $"{GetApiBaseUrl()}/characters/{character.id}",
         WebRequestMethods.Http.Put,

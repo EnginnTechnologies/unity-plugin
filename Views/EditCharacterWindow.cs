@@ -15,11 +15,25 @@ namespace Enginn
       character = newCharacter;
     }
 
+    private static Texture2D TextureField(string name, Texture2D texture)
+    {
+      GUILayout.BeginVertical();
+      var style = new GUIStyle(GUI.skin.label);
+      style.alignment = TextAnchor.UpperCenter;
+      style.fixedWidth = 70;
+      GUILayout.Label(name, style);
+      var result = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Width(70), GUILayout.Height(70));
+      GUILayout.EndVertical();
+      return result;
+    }
+
     void OnGUI()
     {
       GUILayout.Label("Edit Character", EditorStyles.boldLabel);
 
       character.name = EditorGUILayout.TextField("Name", character.name);
+
+      character.avatar = TextureField("Avatar", character.avatar);
 
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {
