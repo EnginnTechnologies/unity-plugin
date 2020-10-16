@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace Enginn
@@ -21,7 +22,33 @@ namespace Enginn
 
     private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
-    public Texture2D avatar;
+    private Texture2D avatar;
+    public byte[] avatar_bytes;
+
+    public Texture2D GetAvatar()
+    {
+      return avatar;
+    }
+
+    public void SetAvatar(Texture2D v)
+    {
+      Debug.Log("[Character] SetAvatar()");
+      avatar = v;
+
+      if ( null == avatar ) return;
+
+      string assetPath = AssetDatabase.GetAssetPath(avatar);
+      Debug.Log($"assetPath: {assetPath}");
+      var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+      if (tImporter != null)
+      {
+        tImporter.textureType = TextureImporterType.Advanced;
+        tImporter.isReadable = true;
+        AssetDatabase.ImportAsset(assetPath);
+        AssetDatabase.Refresh();
+      }
+      avatar_bytes = avatar.EncodeToPNG();
+    }
 
     public void ClearErrors()
     {

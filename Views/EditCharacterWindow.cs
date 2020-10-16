@@ -33,7 +33,7 @@ namespace Enginn
 
       character.name = EditorGUILayout.TextField("Name", character.name);
 
-      character.avatar = TextureField("Avatar", character.avatar);
+      character.SetAvatar(TextureField("Avatar", character.GetAvatar()));
 
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {
