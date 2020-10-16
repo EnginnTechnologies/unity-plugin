@@ -22,32 +22,40 @@ namespace Enginn
 
     private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
-    private Texture2D avatar;
-    public byte[] avatar_bytes;
+    private Texture2D avatar_texture;
+    public string avatar_bytes;
 
-    public Texture2D GetAvatar()
+    public Texture2D GetAvatarTexture()
     {
-      return avatar;
+      Debug.Log($"[Character#{id}] GetAvatarTexture()");
+      return avatar_texture;
     }
 
-    public void SetAvatar(Texture2D v)
+    public void SetAvatarTexture(Texture2D v)
     {
-      Debug.Log("[Character] SetAvatar()");
-      avatar = v;
+      Debug.Log($"[Character#{id}] SetAvatarTexture()");
 
-      if ( null == avatar ) return;
+      if ( v == avatar_texture)
+      {
+        Debug.Log("texture is the same -> do nothing");
+        return;
+      }
 
-      string assetPath = AssetDatabase.GetAssetPath(avatar);
-      Debug.Log($"assetPath: {assetPath}");
+      avatar_texture = v;
+
+      if (null == avatar_texture) return;
+
+      string assetPath = AssetDatabase.GetAssetPath(avatar_texture);
+      // Debug.Log($"assetPath: {assetPath}");
       var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
       if (tImporter != null)
       {
-        tImporter.textureType = TextureImporterType.Advanced;
+        tImporter.textureType = TextureImporterType.Default;
         tImporter.isReadable = true;
         AssetDatabase.ImportAsset(assetPath);
         AssetDatabase.Refresh();
       }
-      avatar_bytes = avatar.EncodeToPNG();
+      avatar_bytes = Convert.ToBase64String(avatar_texture.EncodeToPNG());
     }
 
     public void ClearErrors()
@@ -111,12 +119,13 @@ namespace Enginn
 
     public void DownloadAvatar()
     {
+      Debug.Log($"[Character#{id}] DownloadAvatar()");
       if (String.IsNullOrEmpty(avatar_url))
       {
         // Debug.Log("Character has no avatar");
       } else {
         // Debug.Log($"Character has avatar {character.avatar_url}");
-        avatar = Api.DownloadImage(avatar_url);
+        avatar_texture = Api.DownloadImage(avatar_url);
       }
     }
 

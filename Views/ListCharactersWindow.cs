@@ -27,7 +27,7 @@ namespace Enginn
       style.richText = true;
       foreach (Character character in characters)
       {
-        Texture2D avatar = character.GetAvatar();
+        Texture2D avatar = character.GetAvatarTexture();
         if (avatar != null)
         {
           Rect rect = EditorGUILayout.GetControlRect(false, 200);
