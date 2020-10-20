@@ -9,16 +9,16 @@ namespace Enginn
 
     enum ImportMethod
     {
-      None = 0,
-      CSV = 1,
-      UnityAssets = 2
+      None = -1,
+      CSV = 0,
+      UnityAssets = 1
     }
 
     enum ExportMethod
     {
-      None = 0,
-      Files = 1,
-      UnityAssets = 2
+      None = -1,
+      Files = 0,
+      UnityAssets = 1
     }
 
     private int step = 0;
@@ -79,6 +79,13 @@ namespace Enginn
 
       P("Select an import method");
 
+      BeginCenter();
+      string[] selStrings = {"CSV file", "Unity assets"};
+      GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
+      radioStyle.padding = new RectOffset(20, 0, 0, 0);
+      importMethod = (ImportMethod)GUILayout.SelectionGrid((int)importMethod, selStrings, 1, radioStyle);
+      EndCenter();
+
       Buttons(true, true);
     }
 
@@ -121,11 +128,21 @@ namespace Enginn
       EndButtons();
     }
 
+    private void BeginCenter()
+    {
+      GUILayout.BeginHorizontal();
+      GUILayout.FlexibleSpace();
+    }
+
+    private void EndCenter()
+    {
+      GUILayout.FlexibleSpace();
+      GUILayout.EndHorizontal();
+    }
+
     private void BeginButtons()
     {
       GUIStyle style = new GUIStyle();
-      style.alignment = TextAnchor.MiddleCenter;
-      style.stretchWidth = true;
       style.padding = new RectOffset(0, 0, 30, 30); // left, right, top, bottom
       GUILayout.BeginHorizontal(style);
       GUILayout.FlexibleSpace();
