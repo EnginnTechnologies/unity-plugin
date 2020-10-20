@@ -53,6 +53,16 @@ namespace Enginn
       window.Show();
     }
 
+    public static void SynthesisWizard()
+    {
+
+      // Get existing open window or if none, make a new one
+      SynthesisWizardWindow window = (SynthesisWizardWindow)EditorWindow.GetWindow(
+        typeof(SynthesisWizardWindow)
+      );
+      window.Show();
+    }
+
   }
 
 }

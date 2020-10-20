@@ -22,6 +22,13 @@ namespace Enginn
       Router.NewCharacter();
     }
 
+    [MenuItem("Enginn/Synthesis/Wizard")]
+    static void SynthesisWizard()
+    {
+      // Debug.Log("[Menu] SynthesisWizard");
+      Router.SynthesisWizard();
+    }
+
     // ------------------------------------------------------------------------
     // TESTS
     // ------------------------------------------------------------------------
