@@ -27,17 +27,13 @@ namespace Enginn
 
     public Texture2D GetAvatarTexture()
     {
-      Debug.Log($"[Character#{id}] GetAvatarTexture()");
       return avatar_texture;
     }
 
     public void SetAvatarTexture(Texture2D v)
     {
-      Debug.Log($"[Character#{id}] SetAvatarTexture()");
-
       if ( v == avatar_texture)
       {
-        Debug.Log("texture is the same -> do nothing");
         return;
       }
 
@@ -46,7 +42,6 @@ namespace Enginn
       if (null == avatar_texture) return;
 
       string assetPath = AssetDatabase.GetAssetPath(avatar_texture);
-      // Debug.Log($"assetPath: {assetPath}");
       var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
       if (tImporter != null)
       {
@@ -60,18 +55,15 @@ namespace Enginn
 
     public void ClearErrors()
     {
-      Debug.Log("[Character] ClearErrors()");
       errors.Clear();
     }
 
     public void AddError(string attribute, string error)
     {
-      Debug.Log($"[Character] AddError({attribute}, {error})");
       if (!errors.ContainsKey(attribute)) {
         errors[attribute] = new List<string>();
       }
       errors[attribute].Add(error);
-      Debug.Log($"-> {GetErrorsAsJson()}");
     }
 
     public void SetErrors(Dictionary<string, List<string>> newErrors)
@@ -119,14 +111,11 @@ namespace Enginn
 
     public void DownloadAvatar()
     {
-      Debug.Log($"[Character#{id}] DownloadAvatar()");
       if (String.IsNullOrEmpty(avatar_url))
       {
-        // Debug.Log("Character has no avatar");
-      } else {
-        // Debug.Log($"Character has avatar {character.avatar_url}");
-        avatar_texture = Api.DownloadImage(avatar_url);
+        return;
       }
+      avatar_texture = Api.DownloadImage(avatar_url);
     }
 
   }

@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using UnityEngine;
-using UnityEditor;
 
 namespace Enginn
 {
@@ -40,9 +39,6 @@ namespace Enginn
 
     public static void UpdateCharacter(Character character) {
       var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
-
-      // Debug.Log($"Character payload: {payload}");
-
       var response = NewClient().UploadString(
         $"{GetApiBaseUrl()}/characters/{character.id}",
         WebRequestMethods.Http.Put,
