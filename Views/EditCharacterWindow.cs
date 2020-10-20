@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class EditCharacterWindow : EditorWindow
+  public class EditCharacterWindow : EnginnEditorWindow
   {
     Character character = new Character();
 
@@ -20,6 +20,8 @@ namespace Enginn
       GUILayout.Label("Edit Character", EditorStyles.boldLabel);
 
       character.name = EditorGUILayout.TextField("Name", character.name);
+
+      character.SetAvatarTexture(TextureField("Avatar", character.GetAvatarTexture()));
 
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {

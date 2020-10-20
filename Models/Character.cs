@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace Enginn
@@ -21,22 +22,48 @@ namespace Enginn
 
     private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
-    public Texture2D avatar;
+    private Texture2D avatar_texture;
+    public string avatar_bytes;
+
+    public Texture2D GetAvatarTexture()
+    {
+      return avatar_texture;
+    }
+
+    public void SetAvatarTexture(Texture2D v)
+    {
+      if ( v == avatar_texture)
+      {
+        return;
+      }
+
+      avatar_texture = v;
+
+      if (null == avatar_texture) return;
+
+      string assetPath = AssetDatabase.GetAssetPath(avatar_texture);
+      var tImporter = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+      if (tImporter != null)
+      {
+        tImporter.textureType = TextureImporterType.Default;
+        tImporter.isReadable = true;
+        AssetDatabase.ImportAsset(assetPath);
+        AssetDatabase.Refresh();
+      }
+      avatar_bytes = Convert.ToBase64String(avatar_texture.EncodeToPNG());
+    }
 
     public void ClearErrors()
     {
-      Debug.Log("[Character] ClearErrors()");
       errors.Clear();
     }
 
     public void AddError(string attribute, string error)
     {
-      Debug.Log($"[Character] AddError({attribute}, {error})");
       if (!errors.ContainsKey(attribute)) {
         errors[attribute] = new List<string>();
       }
       errors[attribute].Add(error);
-      Debug.Log($"-> {GetErrorsAsJson()}");
     }
 
     public void SetErrors(Dictionary<string, List<string>> newErrors)
@@ -86,11 +113,9 @@ namespace Enginn
     {
       if (String.IsNullOrEmpty(avatar_url))
       {
-        // Debug.Log("Character has no avatar");
-      } else {
-        // Debug.Log($"Character has avatar {character.avatar_url}");
-        avatar = Api.DownloadImage(avatar_url);
+        return;
       }
+      avatar_texture = Api.DownloadImage(avatar_url);
     }
 
   }

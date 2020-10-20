@@ -27,10 +27,11 @@ namespace Enginn
       style.richText = true;
       foreach (Character character in characters)
       {
-        if (character.avatar != null)
+        Texture2D avatar = character.GetAvatarTexture();
+        if (avatar != null)
         {
           Rect rect = EditorGUILayout.GetControlRect(false, 200);
-          GUI.DrawTexture(rect, character.avatar, ScaleMode.ScaleToFit);
+          GUI.DrawTexture(rect, avatar, ScaleMode.ScaleToFit);
         }
 
         GUILayout.Label($"<b>{character.name}</b> #{character.id}", style);
