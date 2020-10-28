@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Text;
+// using System.IO;
+// using System.Net;
+// using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ namespace Enginn
 {
 
   [System.Serializable]
-  public class Character
+  public class Character : Model
   {
 
     public int id;
@@ -19,8 +18,6 @@ namespace Enginn
     public string created_at;
     public string updated_at;
     public int project_id;
-
-    private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
     private Texture2D avatar_texture;
     public string avatar_bytes;
@@ -51,39 +48,6 @@ namespace Enginn
         AssetDatabase.Refresh();
       }
       avatar_bytes = Convert.ToBase64String(avatar_texture.EncodeToPNG());
-    }
-
-    public void ClearErrors()
-    {
-      errors.Clear();
-    }
-
-    public void AddError(string attribute, string error)
-    {
-      if (!errors.ContainsKey(attribute)) {
-        errors[attribute] = new List<string>();
-      }
-      errors[attribute].Add(error);
-    }
-
-    public void SetErrors(Dictionary<string, List<string>> newErrors)
-    {
-      errors = newErrors;
-    }
-
-    public Dictionary<string, List<string>> GetErrors()
-    {
-      return errors;
-    }
-
-    public string GetErrorsAsJson()
-    {
-      var result = "";
-      foreach(var error in errors)
-      {
-        result += string.Format("\n\"{0}\": [{1}]", error.Key, string.Join(",", error.Value));
-      }
-      return result;
     }
 
     public Character ShallowCopy()

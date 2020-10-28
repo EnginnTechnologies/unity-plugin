@@ -11,6 +11,10 @@ namespace Enginn
   public class Api
   {
 
+    //-------------------------------------------------------------------------
+    // CHARACTERS
+    //-------------------------------------------------------------------------
+
     public static Character[] GetCharacters() {
       var response = NewClient().DownloadString($"{GetApiBaseUrl()}/characters");
       return JsonUtility.FromJson<ApiResponse<Character[]>>(response).result;
@@ -83,13 +87,59 @@ namespace Enginn
       }
     }
 
+    //-------------------------------------------------------------------------
+    // CHARACTER SYNTHESES
+    //-------------------------------------------------------------------------
+
+    public static void CreateCharacterSynthesis(CharacterSynthesis characterSynthesis) {
+      var payload = "{\"character_synthesis\": " + JsonUtility.ToJson(characterSynthesis) + "}";
+      var response = NewClient().UploadString($"{GetApiBaseUrl()}/character_syntheses", payload);
+      Debug.Log($"API response: {response}");
+      var apiResponse = JsonUtility.FromJson<ApiResponse<CharacterSynthesis>>(response);
+
+      switch (apiResponse.status)
+      {
+        case 201:
+          characterSynthesis.id = apiResponse.result.id;
+          characterSynthesis.created_at = apiResponse.result.created_at;
+          characterSynthesis.synthesis_id = apiResponse.result.synthesis_id;
+          characterSynthesis.synthesis_result_file_url = apiResponse.result.synthesis_result_file_url;
+          break;
+        case 422:
+          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          characterSynthesis.SetErrors(apiResponse.GetErrorsDictionnary());
+          break;
+        default:
+          throw new WebException($"API error {apiResponse.status}");
+      }
+    }
+
+    //-------------------------------------------------------------------------
+    // HELPERS
+    //-------------------------------------------------------------------------
+
     public static Texture2D DownloadImage(string url) {
-      Debug.Log($"[Api] DownloadImage {url}");
+      // Debug.Log($"[Api] DownloadImage {url}");
       var client = new WebClient();
       byte[] data = client.DownloadData(url);
       Texture2D texture = new Texture2D(2, 2);
       texture.LoadImage(data);
       return texture;
+    }
+
+    public static bool DownloadWav(string url, string path) {
+      // Debug.Log($"[Api] DownloadWav {url}");
+      var client = new WebClient();
+      byte[] data = client.DownloadData(url);
+
+      if(File.Exists(path))
+      {
+        Debug.LogError($"File at {path} already exists");
+        return false;
+      }
+
+      File.WriteAllBytes(path, data);
+      return true;
     }
 
     private static string GetApiBaseUrl()

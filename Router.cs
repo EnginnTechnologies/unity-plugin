@@ -63,13 +63,14 @@ namespace Enginn
       window.Show();
     }
 
-    public static void NewSynthesis()
+    public static void NewCharacterSynthesis()
     {
 
       // Get existing open window or if none, make a new one
-      NewSynthesisWindow window = (NewSynthesisWindow)EditorWindow.GetWindow(
-        typeof(NewSynthesisWindow)
+      NewCharacterSynthesisWindow window = (NewCharacterSynthesisWindow)EditorWindow.GetWindow(
+        typeof(NewCharacterSynthesisWindow)
       );
+      window.FetchCharacters();
       window.Show();
     }
 

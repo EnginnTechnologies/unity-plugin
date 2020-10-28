@@ -30,10 +30,10 @@ namespace Enginn
     // }
 
     [MenuItem("Enginn/Synthesis/New")]
-    static void NewSynthesis()
+    static void NewCharacterSynthesis()
     {
-      // Debug.Log("[Menu] NewSynthesis");
-      Router.NewSynthesis();
+      // Debug.Log("[Menu] NewCharacterSynthesis");
+      Router.NewCharacterSynthesis();
     }
 
     // ------------------------------------------------------------------------
