@@ -60,7 +60,16 @@ namespace Enginn
       SynthesisWizardWindow window = (SynthesisWizardWindow)EditorWindow.GetWindow(
         typeof(SynthesisWizardWindow)
       );
-      // window.minSize = new Vector2(1000f, 400f);
+      window.Show();
+    }
+
+    public static void NewSynthesis()
+    {
+
+      // Get existing open window or if none, make a new one
+      NewSynthesisWindow window = (NewSynthesisWindow)EditorWindow.GetWindow(
+        typeof(NewSynthesisWindow)
+      );
       window.Show();
     }
 
