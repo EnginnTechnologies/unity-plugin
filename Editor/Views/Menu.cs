@@ -36,6 +36,12 @@ namespace Enginn
       Router.NewCharacterSynthesis();
     }
 
+    [MenuItem("Enginn/Check for updates")]
+    static void UpdatePackage()
+    {
+      UnityEditor.PackageManager.Client.Add("https://github.com/EnginnTechnologies/unity-plugin.git");
+    }
+
     // ------------------------------------------------------------------------
     // TESTS
     // ------------------------------------------------------------------------
