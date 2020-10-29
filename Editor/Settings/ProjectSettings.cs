@@ -71,8 +71,8 @@ namespace Enginn
 
     private void DoSave()
     {
-      Debug.Log("[ProjectSettingsProvider] DoSave");
-      Debug.Log($"-> {m_ProjectSettings.FindProperty("m_ProjectApiToken").stringValue}");
+      // Debug.Log("[ProjectSettingsProvider] DoSave");
+      // Debug.Log($"-> {m_ProjectSettings.FindProperty("m_ProjectApiToken").stringValue}");
       m_ProjectSettings.ApplyModifiedProperties();
       AssetDatabase.SaveAssets();
     }
