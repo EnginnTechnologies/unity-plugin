@@ -21,7 +21,8 @@ namespace Enginn
 
       character.name = EditorGUILayout.TextField("Name", character.name);
 
-      character.SetAvatarTexture(TextureField("Avatar", character.GetAvatarTexture()));
+      // "Avatar",
+      character.SetAvatarTexture(TextureField(character.GetAvatarTexture()));
 
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {

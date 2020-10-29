@@ -5,7 +5,7 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class NewCharacterSynthesisWindow : EnginnEditorWindow
+  public class NewCharacterSynthesisWindow : ScrollableEditorWindow
   {
 
     private Character[] characters;
@@ -15,55 +15,47 @@ namespace Enginn
     private CharacterSynthesis characterSynthesis = new CharacterSynthesis();
     private int modifierIndex = 0;
 
+    // ------------------------------------------------------------------------
+    // GUI
+    // ------------------------------------------------------------------------
+
     public NewCharacterSynthesisWindow()
     {
-      // Debug.Log("[NewCharacterSynthesisWindow] constructor");
-      minSize = new Vector2(1000f, 400f);
-      titleContent = new GUIContent("Enginn speech synthesis");
+      titleContent = new GUIContent("Enginn - New synthesis");
     }
 
-    void OnGUI()
+    protected override void OnGUITitle()
     {
       H1("Enginn speech synthesis");
-      P("Please choose a character and specify a text to perform the synthesis.");
-      OnGUIForm();
-      OnGUIButtons();
     }
 
-    void OnGUIForm()
+    protected override void OnGUIContent()
     {
-      GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
-      radioStyle.padding = new RectOffset(20, 0, 0, 0);
+      P("Please choose a character and specify a text to perform the synthesis.");
+
+      GUILayout.Space(50);
 
       // CHARACTER
-      GUILayout.BeginHorizontal();
-      GUILayout.FlexibleSpace();
-      SetCharacterIndex(GUILayout.SelectionGrid(characterIndex, characterNames, 1, radioStyle));
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
+      BeginCenteredFormField();
+      FormLabel("Character");
+      SetCharacterIndex(FormRadio(characterIndex, characterNames));
+      EndCenter();
 
       // TEXT
-      GUILayout.BeginHorizontal();
-      GUILayout.FlexibleSpace();
-      characterSynthesis.text = EditorGUILayout.TextField("Text", characterSynthesis.text, GUILayout.Width(400));
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
+      BeginCenteredFormField();
+      FormLabel("Text");
+      characterSynthesis.text = FormTextField(characterSynthesis.text);
+      EndCenter();
 
       // MODIFIER
-      GUILayout.BeginHorizontal();
-      GUILayout.FlexibleSpace();
-      SetModifierIndex(GUILayout.SelectionGrid(modifierIndex, Synthesis.ModifierNames, 1, radioStyle));
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
+      BeginCenteredFormField();
+      FormLabel("Modifier");
+      SetModifierIndex(FormRadio(modifierIndex, Synthesis.ModifierNames));
+      EndCenter();
     }
 
-    void OnGUIButtons()
+    protected override void OnGUIButtons()
     {
-      GUIStyle style = new GUIStyle();
-      style.padding = new RectOffset(0, 0, 30, 30); // left, right, top, bottom
-      GUILayout.BeginHorizontal(style);
-      GUILayout.FlexibleSpace();
-
       if(GUILayout.Button("Cancel", GUILayout.Width(100)))
       {
         Close();
@@ -77,10 +69,11 @@ namespace Enginn
         OnCreate();
       }
       GUI.enabled = true;
-
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
     }
+
+    // ------------------------------------------------------------------------
+    // METHODS
+    // ------------------------------------------------------------------------
 
     public void FetchCharacters()
     {
@@ -101,11 +94,7 @@ namespace Enginn
 
     void OnCreate()
     {
-      // Debug.Log("[NewCharacterSynthesisWindow] Create");
-      // Debug.Log($"CharacterSynthesis: {JsonUtility.ToJson(characterSynthesis)}");
-      bool created = characterSynthesis.Create();
-      // Debug.Log($"Response: {created}");
-      if(created)
+      if(characterSynthesis.Create())
       {
         if(characterSynthesis.DownloadResultFile())
         {
@@ -120,7 +109,6 @@ namespace Enginn
 
     private void SetCharacterIndex(int newCharacterIndex)
     {
-      // Debug.Log($"[NewCharacterSynthesisWindow] SetCharacterIndex({newCharacterIndex})");
       characterIndex = newCharacterIndex;
       if(newCharacterIndex >= 0)
       {

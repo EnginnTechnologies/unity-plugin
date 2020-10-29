@@ -8,18 +8,6 @@ namespace Enginn
   public class EnginnEditorWindow : EditorWindow
   {
 
-    protected static Texture2D TextureField(string name, Texture2D texture)
-    {
-      GUILayout.BeginVertical();
-      var style = new GUIStyle(GUI.skin.label);
-      style.alignment = TextAnchor.UpperCenter;
-      style.fixedWidth = 70;
-      GUILayout.Label(name, style);
-      var result = (Texture2D)EditorGUILayout.ObjectField(texture, typeof(Texture2D), false, GUILayout.Width(70), GUILayout.Height(70));
-      GUILayout.EndVertical();
-      return result;
-    }
-
     protected static GUIStyle h1Style = null;
     protected static GUIStyle h2Style = null;
     protected static GUIStyle pStyle = null;
@@ -79,6 +67,73 @@ namespace Enginn
     protected static void P(string content)
     {
       GUILayout.Label(content, PStyle());
+    }
+
+    public void BeginCenter()
+    {
+      GUILayout.BeginHorizontal();
+      GUILayout.FlexibleSpace();
+    }
+
+    public void EndCenter()
+    {
+      GUILayout.FlexibleSpace();
+      GUILayout.EndHorizontal();
+    }
+
+    public void BeginCenteredFormField()
+    {
+      GUIStyle style = new GUIStyle();
+      style.padding = new RectOffset(0, 0, 10, 10); // left, right, top, bottom
+      GUILayout.BeginHorizontal(style);
+      GUILayout.FlexibleSpace();
+    }
+
+    public void FormLabel(string text)
+    {
+      EditorGUILayout.LabelField(
+        text,
+        GUILayout.Width(150)
+      );
+    }
+
+    public int FormRadio(int selected, string[] texts)
+    {
+      GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
+      radioStyle.padding = new RectOffset(20, 0, 0, 0);
+
+      return GUILayout.SelectionGrid(
+        selected,
+        texts,
+        1,
+        radioStyle,
+        GUILayout.Width(400)
+      );
+    }
+
+    public string FormTextField(string text)
+    {
+      return EditorGUILayout.TextField(
+        text,
+        GUILayout.Width(400)
+      );
+    }
+
+    protected static Texture2D TextureField(Texture2D texture)
+    {
+      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+
+      Texture2D result = (Texture2D)EditorGUILayout.ObjectField(
+        texture,
+        typeof(Texture2D),
+        false, // allowSceneObjects
+        GUILayout.Height(200),
+        GUILayout.ExpandWidth(false)
+      );
+
+      EditorGUILayout.EndVertical();
+
+      return result;
     }
 
   }

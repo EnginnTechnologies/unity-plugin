@@ -128,18 +128,6 @@ namespace Enginn
       EndButtons();
     }
 
-    private void BeginCenter()
-    {
-      GUILayout.BeginHorizontal();
-      GUILayout.FlexibleSpace();
-    }
-
-    private void EndCenter()
-    {
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
-    }
-
     private void BeginButtons()
     {
       GUIStyle style = new GUIStyle();

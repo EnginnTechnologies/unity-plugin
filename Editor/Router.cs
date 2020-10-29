@@ -24,8 +24,8 @@ namespace Enginn
       // Debug.Log("[Router] NewCharacter");
 
       // Get existing open window or if none, make a new one
-      CreateCharacterWindow window = (CreateCharacterWindow)EditorWindow.GetWindow(
-        typeof(CreateCharacterWindow)
+      NewCharacterWindow window = (NewCharacterWindow)EditorWindow.GetWindow(
+        typeof(NewCharacterWindow)
       );
       window.Show();
     }
