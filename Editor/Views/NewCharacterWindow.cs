@@ -8,6 +8,7 @@ namespace Enginn
   public class NewCharacterWindow : ScrollableEditorWindow
   {
     private Character character = new Character();
+    private int genderIndex = -1;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -31,6 +32,12 @@ namespace Enginn
       character.name = FormTextField(character.name);
       EndCenter();
 
+      // GENDER
+      BeginCenteredFormField();
+      FormLabel("Gender");
+      SetGenderIndex(FormRadio(genderIndex, Character.GenderNames));
+      EndCenter();
+
       // AVATAR
       BeginCenteredFormField();
       FormLabel("Avatar");
@@ -41,9 +48,8 @@ namespace Enginn
       BeginCenteredFormField();
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {
-        GUIStyle style = new GUIStyle();
-        style.richText = true;
-        GUILayout.Label($"<color=red>Errors: {character.GetErrorsAsJson()}</color>", style);
+        FormLabel($"<color=red>Errors</color>");
+        FormErrors(errors);
       }
       EndCenter();
     }
@@ -73,6 +79,17 @@ namespace Enginn
     {
       // TODO
       return true;
+    }
+
+    private void SetGenderIndex(int newGenderIndex)
+    {
+      genderIndex = newGenderIndex;
+      if(genderIndex >= 0)
+      {
+        character.gender = Character.Genders[genderIndex];
+      } else {
+        character.gender = null;
+      }
     }
 
     void OnCreate()

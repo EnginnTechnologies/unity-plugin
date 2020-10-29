@@ -11,6 +11,7 @@ namespace Enginn
     protected static GUIStyle h1Style = null;
     protected static GUIStyle h2Style = null;
     protected static GUIStyle pStyle = null;
+    protected static GUIStyle formLabelStyle = null;
 
     protected static GUIStyle H1Style()
     {
@@ -54,6 +55,18 @@ namespace Enginn
       return pStyle;
     }
 
+    protected static GUIStyle FormLabelStyle()
+    {
+      if(formLabelStyle == null)
+      {
+        formLabelStyle = new GUIStyle();
+        formLabelStyle.richText = true;
+        formLabelStyle.fontSize = 12;
+        formLabelStyle.normal.textColor = Color.white;
+      }
+      return formLabelStyle;
+    }
+
     protected static void H1(string content)
     {
       GUILayout.Label(content, H1Style());
@@ -93,6 +106,7 @@ namespace Enginn
     {
       EditorGUILayout.LabelField(
         text,
+        FormLabelStyle(),
         GUILayout.Width(150)
       );
     }
@@ -135,6 +149,39 @@ namespace Enginn
 
       return result;
     }
+
+    protected void FormErrors(Dictionary<string, List<string>> errors)
+    {
+      GUIStyle style = new GUIStyle();
+      style.richText = true;
+
+      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+
+      foreach(var error in errors)
+      {
+        foreach(var errorCode in error.Value)
+        {
+          string attr = error.Key;
+          string msg = "";
+          switch (errorCode)
+          {
+            case "blank":
+              msg = $"{attr} is mandatory";
+              break;
+            case "inclusion":
+              msg = $"{attr} is not an accepted value";
+              break;
+            default:
+              msg = $"{attr}: {errorCode}";
+              break;
+          }
+          GUILayout.Label($"<color=red>{msg}</color>", style);
+        }
+      }
+
+      EditorGUILayout.EndVertical();
+    }
+
 
   }
 

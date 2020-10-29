@@ -15,12 +15,22 @@ namespace Enginn
     public int id;
     public string avatar_url;
     public string name;
+    public string gender;
     public string created_at;
     public string updated_at;
     public int project_id;
 
     private Texture2D avatar_texture;
     public string avatar_bytes;
+
+    public class Gender
+    {
+      public const string Male = "male";
+      public const string Female = "female";
+    }
+
+    public static readonly string[] Genders = {Gender.Male, Gender.Female};
+    public static readonly string[] GenderNames = {"Male", "Female"};
 
     public Texture2D GetAvatarTexture()
     {
