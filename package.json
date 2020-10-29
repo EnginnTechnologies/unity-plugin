@@ -1,0 +1,18 @@
+{
+  "name": "tech.enginn.unity",
+  "version": "0.0.1",
+  "displayName": "Enginn",
+  "description": "Enginn Unity plugin",
+  "unity": "2019.4",
+ "keywords": [
+    "enginn",
+    "audio",
+    "text-to-speech",
+    "synthesis"
+  ],
+  "author": {
+    "name": "Enginn Technologies",
+    "email": "mail@enginn.tech",
+    "url": "https://www.enginn.tech"
+  }
+}
