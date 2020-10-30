@@ -72,8 +72,13 @@ namespace Enginn
 
     private bool TestCanSubmit()
     {
-      // TODO
-      return true;
+      return (
+        (
+          character.name.Length > 0
+        ) && (
+          genderIndex >= 0
+        )
+      );
     }
 
     private void SetGenderIndex(int newGenderIndex)
