@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
@@ -62,6 +63,15 @@ namespace Enginn
       FormLabel("File name");
       fileName = FormTextField(fileName);
       EndCenter();
+
+      // ERRORS
+      BeginCenteredFormField();
+      Dictionary<string, List<string>> errors = characterSynthesis.GetErrors();
+      if(errors.Count > 0) {
+        FormLabel($"<color=red>Errors</color>");
+        FormErrors(errors);
+      }
+      EndCenter();
     }
 
     protected override void OnGUIButtons()
@@ -97,9 +107,9 @@ namespace Enginn
         (
           characterSynthesis.character_id > 0
         ) && (
-          characterSynthesis.text.Length > 0
+          !String.IsNullOrEmpty(characterSynthesis.text)
         ) && (
-          fileName.Length > 0
+          !String.IsNullOrEmpty(fileName)
         )
       );
     }

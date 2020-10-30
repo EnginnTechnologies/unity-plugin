@@ -10,7 +10,7 @@ namespace Enginn
 
     public int id;
     public string modifier = Synthesis.Modifier.None;
-    public string text = "";
+    public string text;
     public string created_at;
     public int character_id;
     public int synthesis_id;

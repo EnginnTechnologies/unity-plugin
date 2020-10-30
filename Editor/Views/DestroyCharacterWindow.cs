@@ -5,56 +5,89 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class DestroyCharacterWindow : EditorWindow
+  public class DestroyCharacterWindow : ScrollableEditorWindow
   {
     Character character = new Character();
 
-    public void SetCharacter(Character newCharacter)
+    // ------------------------------------------------------------------------
+    // GUI
+    // ------------------------------------------------------------------------
+
+    public DestroyCharacterWindow()
     {
-      Debug.Log($"[DestroyCharacterWindow] SetCharacter({JsonUtility.ToJson(newCharacter)})");
-      character = newCharacter;
+      titleContent = new GUIContent("Enginn - Delete character");
     }
 
-    void OnGUI()
+    protected override void OnGUITitle()
     {
-      GUILayout.Label("Destroy Character", EditorStyles.boldLabel);
+      H1("Delete character");
+    }
 
-      GUIStyle style = new GUIStyle();
-      style.richText = true;
-      GUILayout.Label($"<b>{character.name}</b> #{character.id}", style);
+    protected override void OnGUIContent()
+    {
 
-      GUILayout.Label("Are you sure?");
+      // AVATAR
+
+      Texture2D avatar = character.GetAvatarTexture();
+      if (avatar != null)
+      {
+        BeginCenter();
+        Rect rect = EditorGUILayout.GetControlRect(false, 200); // hasLabel, height
+        GUI.DrawTexture(rect, avatar, ScaleMode.ScaleToFit);
+        EndCenter();
+      }
+
+      // NAME
+
+      P($"<b>{character.name}</b> (#{character.id})");
+
+      // CONFIRMATION
+
+      GUILayout.Space(50);
+      P("Are you sure?");
 
       Dictionary<string, List<string>> errors = character.GetErrors();
       if(errors.Count > 0) {
-        GUILayout.Label($"<color=red>Errors: {character.GetErrorsAsJson()}</color>", style);
+        P($"<color=red>Errors: {character.GetErrorsAsJson()}</color>");
       }
+    }
 
-      if(GUILayout.Button("Cancel"))
+    protected override void OnGUIButtons()
+    {
+      if(GUILayout.Button("No, cancel", GUILayout.Width(100)))
       {
+        Router.ListCharacters();
         Close();
       }
 
-      if(GUILayout.Button("Destroy"))
+      GUILayout.Space(50);
+
+      if(GUILayout.Button("Yes, delete", GUILayout.Width(100)))
       {
         OnDelete();
       }
     }
 
+    // ------------------------------------------------------------------------
+    // METHODS
+    // ------------------------------------------------------------------------
+
+    public void SetCharacter(Character newCharacter)
+    {
+      character = newCharacter;
+    }
+
     void OnDelete()
     {
-      Debug.Log("[DestroyCharacterWindow] OnDelete");
-      bool destroyed = character.Destroy();
-      Debug.Log($"Response: {destroyed}");
-      if(destroyed)
+      if(character.Destroy())
       {
-        Debug.Log($"Character destroyed");
+        Router.ListCharacters();
         Close();
       } else {
         Debug.LogError($"Character errors: {character.GetErrorsAsJson()}");
       }
-
     }
+
   }
 
 }

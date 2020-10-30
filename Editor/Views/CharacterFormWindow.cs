@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -48,6 +49,7 @@ namespace Enginn
     {
       if(GUILayout.Button("Cancel", GUILayout.Width(100)))
       {
+        Router.ListCharacters();
         Close();
       }
 
@@ -74,7 +76,7 @@ namespace Enginn
     {
       return (
         (
-          character.name.Length > 0
+          !String.IsNullOrEmpty(character.name)
         ) && (
           genderIndex >= 0
         )

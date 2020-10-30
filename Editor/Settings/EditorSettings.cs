@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace Enginn
@@ -13,7 +14,7 @@ namespace Enginn
 
     public static string GetApiBaseUrl()
     {
-      if (apiBaseUrl.Length > 0)
+      if (!String.IsNullOrEmpty(apiBaseUrl))
         return apiBaseUrl;
       return "https://app.enginn.tech/api/v1/";
     }
