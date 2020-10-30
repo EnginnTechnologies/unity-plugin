@@ -82,9 +82,14 @@ namespace Enginn
       GUILayout.Label(content, PStyle());
     }
 
-    public void BeginCenter()
+    public void BeginCenter(GUIStyle style = null)
     {
-      GUILayout.BeginHorizontal();
+      if(style == null)
+      {
+        GUILayout.BeginHorizontal();
+      } else {
+        GUILayout.BeginHorizontal(style);
+      }
       GUILayout.FlexibleSpace();
     }
 
@@ -98,8 +103,7 @@ namespace Enginn
     {
       GUIStyle style = new GUIStyle();
       style.padding = new RectOffset(0, 0, 10, 10); // left, right, top, bottom
-      GUILayout.BeginHorizontal(style);
-      GUILayout.FlexibleSpace();
+      BeginCenter(style);
     }
 
     public void FormLabel(string text)
@@ -182,6 +186,19 @@ namespace Enginn
       EditorGUILayout.EndVertical();
     }
 
+    protected static Texture2D MakeTexture(int width, int height, Color col)
+    {
+      Color[] pix = new Color[width*height];
+
+      for(int i = 0; i < pix.Length; i++)
+        pix[i] = col;
+
+      Texture2D result = new Texture2D(width, height);
+      result.SetPixels(pix);
+      result.Apply();
+
+      return result;
+    }
 
   }
 
