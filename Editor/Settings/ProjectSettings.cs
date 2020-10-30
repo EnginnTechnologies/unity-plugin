@@ -22,7 +22,7 @@ namespace Enginn
       if (settings == null)
       {
         settings = ScriptableObject.CreateInstance<ProjectSettings>();
-        settings.m_ProjectApiToken = "";
+        settings.SetProjectApiToken("");
         AssetDatabase.CreateAsset(settings, k_ProjectSettingsPath);
         AssetDatabase.SaveAssets();
       }
@@ -38,6 +38,12 @@ namespace Enginn
     {
       return GetSerializedSettings().FindProperty("m_ProjectApiToken").stringValue;
     }
+
+    private void SetProjectApiToken(string projectApiToken)
+    {
+      m_ProjectApiToken = projectApiToken;
+    }
+
   }
 
   // Create ProjectSettingsProvider by deriving from SettingsProvider:

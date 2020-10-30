@@ -161,6 +161,16 @@ namespace Enginn
   {
     public string attribute;
     public string error;
+
+    public void SetAttribute(string newAttribute)
+    {
+      attribute = newAttribute;
+    }
+
+    public void SetError(string newError)
+    {
+      error = newError;
+    }
   }
 
   [Serializable]
@@ -169,6 +179,21 @@ namespace Enginn
     public int status;
     public ApiError[] errors;
     public T result;
+
+    public void SetStatus(int newStatus)
+    {
+      status = newStatus;
+    }
+
+    public void SetErrors(ApiError[] newErrors)
+    {
+      errors = newErrors;
+    }
+
+    public void SetResult(T newResult)
+    {
+      result = newResult;
+    }
 
     public string GetErrorsAsJson()
     {
