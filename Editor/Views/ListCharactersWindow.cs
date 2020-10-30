@@ -6,7 +6,7 @@ namespace Enginn
 
   public class ListCharactersWindow : ScrollableEditorWindow
   {
-    Character[] characters;
+    Character[] characters = {};
 
     private const int nbCharactersPerRow = 2;
     private const int characterBoxWidth = 400;
