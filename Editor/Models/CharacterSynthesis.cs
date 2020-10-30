@@ -22,7 +22,7 @@ namespace Enginn
       return id > 0;
     }
 
-    public bool DownloadResultFile()
+    public bool DownloadResultFile(string fileName)
     {
       if (String.IsNullOrEmpty(synthesis_result_file_url))
       {
@@ -33,7 +33,7 @@ namespace Enginn
       {
         Directory.CreateDirectory(folderPath);
       }
-      string filePath = $"{folderPath}/{id}.wav";
+      string filePath = $"{folderPath}/{fileName}.wav";
       return Api.DownloadWav(synthesis_result_file_url, filePath);
     }
 

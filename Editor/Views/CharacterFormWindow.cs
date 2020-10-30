@@ -91,6 +91,7 @@ namespace Enginn
     {
       if(Submit())
       {
+        Router.ListCharacters();
         Close();
       } else {
         Debug.LogError($"Character errors: {character.GetErrorsAsJson()}");

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
@@ -15,6 +16,8 @@ namespace Enginn
     private CharacterSynthesis characterSynthesis = new CharacterSynthesis();
     private int modifierIndex = 0;
 
+    private string fileName = "";
+
     // ------------------------------------------------------------------------
     // GUI
     // ------------------------------------------------------------------------
@@ -22,6 +25,7 @@ namespace Enginn
     public NewCharacterSynthesisWindow()
     {
       titleContent = new GUIContent("Enginn - New synthesis");
+      fileName = DateTime.Now.ToString("yyyy-MM-dd_h:mm");
     }
 
     protected override void OnGUITitle()
@@ -51,6 +55,12 @@ namespace Enginn
       BeginCenteredFormField();
       FormLabel("Modifier");
       SetModifierIndex(FormRadio(modifierIndex, Synthesis.ModifierNames));
+      EndCenter();
+
+      // FILE NAME
+      BeginCenteredFormField();
+      FormLabel("File name");
+      fileName = FormTextField(fileName);
       EndCenter();
     }
 
@@ -88,6 +98,8 @@ namespace Enginn
           characterSynthesis.character_id > 0
         ) && (
           characterSynthesis.text.Length > 0
+        ) && (
+          fileName.Length > 0
         )
       );
     }
@@ -96,7 +108,7 @@ namespace Enginn
     {
       if(characterSynthesis.Create())
       {
-        if(characterSynthesis.DownloadResultFile())
+        if(characterSynthesis.DownloadResultFile(fileName))
         {
           Close();
         } else {

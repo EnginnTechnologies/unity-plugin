@@ -86,6 +86,7 @@ namespace Enginn
         if(GUILayout.Button("Edit", GUILayout.Width(100)))
         {
           Router.EditCharacter(character);
+          Close();
         }
 
         GUILayout.Space(20);
@@ -93,6 +94,7 @@ namespace Enginn
         if(GUILayout.Button("Delete", GUILayout.Width(100)))
         {
           Router.DestroyCharacter(character);
+          Close();
         }
 
         EndCenter();
@@ -122,6 +124,7 @@ namespace Enginn
       if(GUILayout.Button("New", GUILayout.Width(100)))
       {
         Router.NewCharacter();
+        Close();
       }
     }
 
