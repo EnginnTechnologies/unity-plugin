@@ -5,58 +5,51 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class EditCharacterWindow : EnginnEditorWindow
+  public class EditCharacterWindow : CharacterFormWindow
   {
-    Character character = new Character();
+
+    // ------------------------------------------------------------------------
+    // GUI
+    // ------------------------------------------------------------------------
+
+    public EditCharacterWindow()
+    {
+      titleContent = new GUIContent("Enginn - Edit character");
+    }
+
+    protected override void OnGUITitle()
+    {
+      H1("Edit character");
+    }
+
+    protected override string SubmitText()
+    {
+      return "Update";
+    }
+
+    // ------------------------------------------------------------------------
+    // METHODS
+    // ------------------------------------------------------------------------
 
     public void SetCharacter(Character newCharacter)
     {
-      Debug.Log($"[EditCharacterWindow] SetCharacter({JsonUtility.ToJson(newCharacter)})");
       character = newCharacter;
+      int idx = -1;
+      foreach (string gender in Character.Genders)
+      {
+        idx++;
+        if(gender == character.gender)
+        {
+          genderIndex = idx;
+        }
+      }
     }
 
-    void OnGUI()
+    protected override bool Submit()
     {
-      GUILayout.Label("Edit Character", EditorStyles.boldLabel);
-
-      character.name = EditorGUILayout.TextField("Name", character.name);
-
-      // "Avatar",
-      character.SetAvatarTexture(TextureField(character.GetAvatarTexture()));
-
-      Dictionary<string, List<string>> errors = character.GetErrors();
-      if(errors.Count > 0) {
-        GUIStyle style = new GUIStyle();
-        style.richText = true;
-        GUILayout.Label($"<color=red>Errors: {character.GetErrorsAsJson()}</color>", style);
-      }
-
-      if(GUILayout.Button("Cancel"))
-      {
-        Close();
-      }
-
-      if(GUILayout.Button("Update"))
-      {
-        OnUpdate();
-      }
+      return character.Update();
     }
 
-    void OnUpdate()
-    {
-      Debug.Log("[EditCharacterWindow] OnUpdate");
-      Debug.Log($"Character: {JsonUtility.ToJson(character)}");
-      bool updated = character.Update();
-      Debug.Log($"Response: {updated}");
-      if(updated)
-      {
-        Debug.Log($"Character updated: {JsonUtility.ToJson(character)}");
-        Close();
-      } else {
-        Debug.LogError($"Character errors: {character.GetErrorsAsJson()}");
-      }
-
-    }
   }
 
 }

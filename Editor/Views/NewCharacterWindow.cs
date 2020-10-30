@@ -5,10 +5,8 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class NewCharacterWindow : ScrollableEditorWindow
+  public class NewCharacterWindow : CharacterFormWindow
   {
-    private Character character = new Character();
-    private int genderIndex = -1;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -24,83 +22,20 @@ namespace Enginn
       H1("New character");
     }
 
-    protected override void OnGUIContent()
+    protected override string SubmitText()
     {
-      // NAME
-      BeginCenteredFormField();
-      FormLabel("Name");
-      character.name = FormTextField(character.name);
-      EndCenter();
-
-      // GENDER
-      BeginCenteredFormField();
-      FormLabel("Gender");
-      SetGenderIndex(FormRadio(genderIndex, Character.GenderNames));
-      EndCenter();
-
-      // AVATAR
-      BeginCenteredFormField();
-      FormLabel("Avatar");
-      character.SetAvatarTexture(TextureField(character.GetAvatarTexture()));
-      EndCenter();
-
-      // ERRORS
-      BeginCenteredFormField();
-      Dictionary<string, List<string>> errors = character.GetErrors();
-      if(errors.Count > 0) {
-        FormLabel($"<color=red>Errors</color>");
-        FormErrors(errors);
-      }
-      EndCenter();
-    }
-
-    protected override void OnGUIButtons()
-    {
-      if(GUILayout.Button("Cancel", GUILayout.Width(100)))
-      {
-        Close();
-      }
-
-      GUILayout.Space(50);
-
-      GUI.enabled = TestCanCreate();
-      if(GUILayout.Button("Create", GUILayout.Width(100)))
-      {
-        OnCreate();
-      }
-      GUI.enabled = true;
+      return "Create";
     }
 
     // ------------------------------------------------------------------------
     // METHODS
     // ------------------------------------------------------------------------
 
-    private bool TestCanCreate()
+    protected override bool Submit()
     {
-      // TODO
-      return true;
+      return character.Create();
     }
 
-    private void SetGenderIndex(int newGenderIndex)
-    {
-      genderIndex = newGenderIndex;
-      if(genderIndex >= 0)
-      {
-        character.gender = Character.Genders[genderIndex];
-      } else {
-        character.gender = null;
-      }
-    }
-
-    void OnCreate()
-    {
-      if(character.Create())
-      {
-        Close();
-      } else {
-        Debug.LogError($"Character errors: {character.GetErrorsAsJson()}");
-      }
-    }
   }
 
 }

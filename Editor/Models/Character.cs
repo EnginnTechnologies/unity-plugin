@@ -90,6 +90,7 @@ namespace Enginn
         return;
       }
       avatar_texture = Api.DownloadImage(avatar_url);
+      avatar_bytes = Convert.ToBase64String(avatar_texture.EncodeToPNG());
     }
 
   }
