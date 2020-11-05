@@ -43,6 +43,24 @@ namespace Enginn
           genderIndex = idx;
         }
       }
+      idx = -1;
+      foreach (string age in Character.Ages)
+      {
+        idx++;
+        if(age == character.age)
+        {
+          ageIndex = idx;
+        }
+      }
+      idx = -1;
+      foreach (string pitch in Character.Pitches)
+      {
+        idx++;
+        if(pitch == character.pitch)
+        {
+          pitchIndex = idx;
+        }
+      }
     }
 
     protected override bool Submit()

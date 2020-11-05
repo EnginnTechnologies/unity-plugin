@@ -137,6 +137,14 @@ namespace Enginn
       );
     }
 
+    public bool FormToggle(bool value)
+    {
+      return EditorGUILayout.Toggle(
+        value,
+        GUILayout.Width(400)
+      );
+    }
+
     protected static Texture2D TextureField(Texture2D texture)
     {
       EditorGUILayout.BeginVertical(GUILayout.Width(400));

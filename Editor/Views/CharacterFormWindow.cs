@@ -10,6 +10,8 @@ namespace Enginn
   {
     protected Character character = new Character();
     protected int genderIndex = -1;
+    protected int ageIndex = -1;
+    protected int pitchIndex = -1;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -27,6 +29,24 @@ namespace Enginn
       BeginCenteredFormField();
       FormLabel("Gender");
       SetGenderIndex(FormRadio(genderIndex, Character.GenderNames));
+      EndCenter();
+
+      // AGE
+      BeginCenteredFormField();
+      FormLabel("Age");
+      SetAgeIndex(FormRadio(ageIndex, Character.AgeNames));
+      EndCenter();
+
+      // PITCH
+      BeginCenteredFormField();
+      FormLabel("Pitch");
+      SetPitchIndex(FormRadio(pitchIndex, Character.PitchNames));
+      EndCenter();
+
+      // IS NASAL
+      BeginCenteredFormField();
+      FormLabel("Has a nasal voice");
+      character.is_nasal = FormToggle(character.is_nasal);
       EndCenter();
 
       // AVATAR
@@ -79,6 +99,10 @@ namespace Enginn
           !String.IsNullOrEmpty(character.name)
         ) && (
           genderIndex >= 0
+        ) && (
+          ageIndex >= 0
+        ) && (
+          pitchIndex >= 0
         )
       );
     }
@@ -91,6 +115,28 @@ namespace Enginn
         character.gender = Character.Genders[genderIndex];
       } else {
         character.gender = null;
+      }
+    }
+
+    private void SetAgeIndex(int newAgeIndex)
+    {
+      ageIndex = newAgeIndex;
+      if(ageIndex >= 0)
+      {
+        character.age = Character.Ages[ageIndex];
+      } else {
+        character.age = null;
+      }
+    }
+
+    private void SetPitchIndex(int newPitchIndex)
+    {
+      pitchIndex = newPitchIndex;
+      if(pitchIndex >= 0)
+      {
+        character.pitch = Character.Pitches[pitchIndex];
+      } else {
+        character.pitch = null;
       }
     }
 

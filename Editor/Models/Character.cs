@@ -16,12 +16,19 @@ namespace Enginn
     public string avatar_url;
     public string name;
     public string gender;
+    public string pitch;
+    public string age;
+    public bool is_nasal;
     public string created_at;
     public string updated_at;
     public int project_id;
 
     private Texture2D avatar_texture;
     public string avatar_bytes;
+
+    // ------------------------------------------------------------------------
+    // CONSTANTS
+    // ------------------------------------------------------------------------
 
     public class Gender
     {
@@ -31,6 +38,29 @@ namespace Enginn
 
     public static readonly string[] Genders = {Gender.Male, Gender.Female};
     public static readonly string[] GenderNames = {"Male", "Female"};
+
+    public class Age
+    {
+      public const string Mid = "a0_mid";
+      public const string Old = "a1_old";
+    }
+
+    public static readonly string[] Ages = {Age.Mid, Age.Old};
+    public static readonly string[] AgeNames = {"Middle aged", "Older"};
+
+    public class Pitch
+    {
+      public const string Low = "p0_low";
+      public const string Mid = "p1_mid";
+      public const string High = "p2_high";
+    }
+
+    public static readonly string[] Pitches = {Pitch.Low, Pitch.Mid, Pitch.High};
+    public static readonly string[] PitchNames = {"Lower", "Average", "Higher"};
+
+    // ------------------------------------------------------------------------
+    // METHODS
+    // ------------------------------------------------------------------------
 
     public Texture2D GetAvatarTexture()
     {
