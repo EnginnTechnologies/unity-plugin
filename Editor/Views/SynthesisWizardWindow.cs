@@ -25,6 +25,9 @@ namespace Enginn
     private ImportMethod importMethod = ImportMethod.None;
     private ExportMethod exportMethod = ExportMethod.None;
 
+    private TextAsset importFile;
+    private List<Dictionary<string, string>> importFileContent;
+
     public SynthesisWizardWindow()
     {
       titleContent = new GUIContent("Enginn - Synthesis wizard");
@@ -86,10 +89,50 @@ namespace Enginn
 
     void OnGUIContentStep2()
     {
+      P("Select an existing asset");
+
+      GUILayout.Space(50);
+
+      BeginCenter();
+      if(importFile == null)
+      {
+        importFileContent = null;
+      }
+      importFile = TextAssetField(importFile);
+      EndCenter();
     }
 
     void OnGUIContentStep3()
     {
+      P("Verify texts");
+
+      GUILayout.Space(50);
+
+      BeginCenter();
+      int idx = 0;
+      foreach (Dictionary<string, string> line in GetImportFileContent())
+      {
+        idx++;
+        P($"Line {idx}:");
+        slug = line["slug"];
+        P($"- slug = {slug}");
+        text = line["text"];
+        P($"- text = {text}");
+      }
+      EndCenter();
+    }
+
+    private List<Dictionary<string, string>> GetImportFileContent()
+    {
+      if(importFile == null)
+      {
+        return null;
+      }
+      if(importFileContent == null)
+      {
+        importFileContent = DictionaryCSVReader.FromString(importFile.text);
+      }
+      return importFileContent;
     }
 
     void OnGUIContentStep4()
@@ -122,7 +165,6 @@ namespace Enginn
       if(step < 5)
       {
         GUI.enabled = testCanNext();
-        Debug.Log($"testCanNext said {testCanNext()}");
         if(GUILayout.Button("Next >", ButtonStyle()))
         {
           Next();

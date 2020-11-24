@@ -145,6 +145,23 @@ namespace Enginn
       );
     }
 
+    protected static TextAsset TextAssetField(TextAsset asset)
+    {
+      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+
+      TextAsset result = (TextAsset)EditorGUILayout.ObjectField(
+        asset,
+        typeof(TextAsset),
+        false, // allowSceneObjects
+        GUILayout.Height(200),
+        GUILayout.ExpandWidth(false)
+      );
+
+      EditorGUILayout.EndVertical();
+
+      return result;
+    }
+
     protected static Texture2D TextureField(Texture2D texture)
     {
       EditorGUILayout.BeginVertical(GUILayout.Width(400));
