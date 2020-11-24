@@ -4,7 +4,7 @@ using UnityEditor;
 namespace Enginn
 {
 
-  public class SynthesisWizardWindow : EnginnEditorWindow
+  public class SynthesisWizardWindow : ScrollableEditorWindow
   {
 
     enum ImportMethod
@@ -27,57 +27,54 @@ namespace Enginn
 
     public SynthesisWizardWindow()
     {
-      Debug.Log("[SynthesisWizardWindow] constructor");
-      minSize = new Vector2(1000f, 400f);
-      titleContent = new GUIContent("Enginn speech synthesis");
+      titleContent = new GUIContent("Enginn - Synthesis wizard");
     }
 
-    void OnGUI()
-    {
-      switch(step)
-      {
-        case 0:
-          OnGUIStep0();
-          break;
-        case 1:
-          OnGUIStep1();
-          break;
-        case 2:
-          OnGUIStep2();
-          break;
-        case 3:
-          OnGUIStep3();
-          break;
-        case 4:
-          OnGUIStep4();
-          break;
-        case 5:
-          OnGUIStep5();
-          break;
-      }
-    }
-
-    private void Title()
+    protected override void OnGUITitle()
     {
       H1("Enginn speech synthesis");
     }
 
-    void OnGUIStep0()
+    protected override void OnGUIContent()
     {
-      Title();
-
-      P("This wizard will guide you through the steps");
-
-      Buttons(false, true);
+      switch(step)
+      {
+        case 0:
+          OnGUIContentStep0();
+          break;
+        case 1:
+          H2("Step 1: texts import method");
+          OnGUIContentStep1();
+          break;
+        case 2:
+          H2("Step 2: texts import");
+          OnGUIContentStep2();
+          break;
+        case 3:
+          H2("Step 3: texts verification");
+          OnGUIContentStep3();
+          break;
+        case 4:
+          H2("Step 4: audio export option");
+          OnGUIContentStep4();
+          break;
+        case 5:
+          H2("Step 5: audio files generation");
+          OnGUIContentStep5();
+          break;
+      }
     }
 
-    void OnGUIStep1()
+    void OnGUIContentStep0()
     {
-      Title();
+      P("This wizard will guide you through the steps");
+    }
 
-      H2("Step 1: texts import method");
-
+    void OnGUIContentStep1()
+    {
       P("Select an import method");
+
+      GUILayout.Space(50);
 
       BeginCenter();
       string[] selStrings = {"CSV file", "Unity assets"};
@@ -85,61 +82,22 @@ namespace Enginn
       radioStyle.padding = new RectOffset(20, 0, 0, 0);
       importMethod = (ImportMethod)GUILayout.SelectionGrid((int)importMethod, selStrings, 1, radioStyle);
       EndCenter();
-
-      Buttons(true, true);
     }
 
-    void OnGUIStep2()
+    void OnGUIContentStep2()
     {
-      Title();
-
-      H2("Step 2: texts import");
-
-      Buttons(true, true);
     }
 
-    void OnGUIStep3()
+    void OnGUIContentStep3()
     {
-      Title();
-
-      H2("Step 3: texts verification");
-
-      Buttons(true, true);
     }
 
-    void OnGUIStep4()
+    void OnGUIContentStep4()
     {
-      H2("Step 4: audio export option");
-
-      Buttons(true, true);
     }
 
-    void OnGUIStep5()
+    void OnGUIContentStep5()
     {
-      H2("Step 5: audio files generation");
-
-      BeginButtons();
-
-      if(GUILayout.Button("Stop", GUILayout.Width(100)))
-      {
-        Close();
-      }
-
-      EndButtons();
-    }
-
-    private void BeginButtons()
-    {
-      GUIStyle style = new GUIStyle();
-      style.padding = new RectOffset(0, 0, 30, 30); // left, right, top, bottom
-      GUILayout.BeginHorizontal(style);
-      GUILayout.FlexibleSpace();
-    }
-
-    private void EndButtons()
-    {
-      GUILayout.FlexibleSpace();
-      GUILayout.EndHorizontal();
     }
 
     private GUILayoutOption ButtonStyle()
@@ -147,11 +105,9 @@ namespace Enginn
       return GUILayout.Width(100);
     }
 
-    private void Buttons(bool canPrev, bool canNext)
+    protected override void OnGUIButtons()
     {
-      BeginButtons();
-
-      if(canPrev)
+      if(step > 0)
       {
         GUI.enabled = testCanPrev();
         if(GUILayout.Button("< Previous", ButtonStyle()))
@@ -163,9 +119,10 @@ namespace Enginn
 
       GUILayout.Space(50);
 
-      if(canNext)
+      if(step < 5)
       {
         GUI.enabled = testCanNext();
+        Debug.Log($"testCanNext said {testCanNext()}");
         if(GUILayout.Button("Next >", ButtonStyle()))
         {
           Next();
@@ -173,7 +130,13 @@ namespace Enginn
         GUI.enabled = true;
       }
 
-      EndButtons();
+      if(step == 5)
+      {
+        if(GUILayout.Button("Stop", ButtonStyle()))
+        {
+          Close();
+        }
+      }
     }
 
     private bool testCanPrev()
