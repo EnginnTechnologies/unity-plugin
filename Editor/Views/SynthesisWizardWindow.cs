@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -109,16 +110,32 @@ namespace Enginn
       GUILayout.Space(50);
 
       BeginCenter();
-      int idx = 0;
+      EditorGUILayout.BeginVertical();
+
+      List<string> headers = new List<string>()
+      {
+        "Line",
+        "Slug",
+        "Text"
+      };
+      List<int> widths = new List<int>()
+      {
+        50,
+        150,
+        200
+      };
+
+      TableHeaderRow(headers, widths);
+
+      int line_idx = 0;
       foreach (Dictionary<string, string> line in GetImportFileContent())
       {
-        idx++;
-        P($"Line {idx}:");
-        slug = line["slug"];
-        P($"- slug = {slug}");
-        text = line["text"];
-        P($"- text = {text}");
+        line_idx++;
+        List<string> values = new List<string>(){line_idx.ToString(), line["slug"], line["text"]};
+        TableBodyRow(values, widths);
       }
+
+      EditorGUILayout.EndVertical();
       EndCenter();
     }
 

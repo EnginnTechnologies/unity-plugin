@@ -13,9 +13,9 @@ public class DictionaryCSVReader
   {
     if(line_index == 0)
     {
-      keys = line_values;
+      keys = new List<string>(line_values);
     } else {
-      line = new Dictionary<string, string>();
+      Dictionary<string, string> line = new Dictionary<string, string>();
       int idx = 0;
       foreach (string key in keys)
       {
@@ -32,7 +32,7 @@ public class DictionaryCSVReader
     fgCSVReader.LoadFromString(file_contents, new fgCSVReader.ReadLineDelegate(LineReader));
   }
 
-  public static Dictionary<string, string> FromString(string file_contents)
+  public static List<Dictionary<string, string>> FromString(string file_contents)
   {
     DictionaryCSVReader reader = new DictionaryCSVReader();
     reader.LoadFromString(file_contents);

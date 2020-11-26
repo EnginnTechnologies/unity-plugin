@@ -145,6 +145,85 @@ namespace Enginn
       );
     }
 
+    public void TableHeaderCell(string content, int width)
+    {
+      GUIStyle tableHeaderStyle = new GUIStyle();
+      tableHeaderStyle.fixedWidth = width;
+      tableHeaderStyle.richText = true;
+      tableHeaderStyle.fontSize = 12;
+      tableHeaderStyle.fontStyle = FontStyle.Bold;
+      tableHeaderStyle.alignment = TextAnchor.MiddleCenter;
+      tableHeaderStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      tableHeaderStyle.normal.textColor = Color.white;
+      tableHeaderStyle.normal.background = MakeTexture(
+        width,
+        1, // height
+        new Color(1.0f, 1.0f, 1.0f, 0.1f)
+      );
+
+      EditorGUILayout.LabelField(
+        content,
+        tableHeaderStyle,
+        GUILayout.Width(width)
+      );
+    }
+
+    public void TableHeaderRow(List<string> contents, List<int> widths)
+    {
+      EditorGUILayout.BeginHorizontal();
+      int idx = 0;
+      foreach (string content in contents)
+      {
+        TableHeaderCell(content, widths[idx]);
+        idx++;
+      }
+      EditorGUILayout.EndHorizontal();
+    }
+
+    public void TableBodyCell(string content, int width)
+    {
+      GUIStyle tableBodyStyle = new GUIStyle();
+      tableBodyStyle.fixedWidth = width;
+      tableBodyStyle.richText = true;
+      tableBodyStyle.fontSize = 12;
+      tableBodyStyle.alignment = TextAnchor.MiddleCenter;
+      tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      tableBodyStyle.normal.textColor = Color.white;
+
+      EditorGUILayout.LabelField(
+        content,
+        tableBodyStyle,
+        GUILayout.Width(width)
+      );
+    }
+
+    public void TableBodyRow(List<string> contents, List<int> widths)
+    {
+      EditorGUILayout.BeginHorizontal();
+      int idx = 0;
+      foreach (string content in contents)
+      {
+        TableBodyCell(content, widths[idx]);
+        idx++;
+      }
+      EditorGUILayout.EndHorizontal();
+    }
+
+    public void Table(List<List<string>> data, List<int> widths)
+    {
+      int idx = 0;
+      foreach (List<string> line in data)
+      {
+        if (idx == 0)
+        {
+          TableHeaderRow(line, widths);
+        } else {
+          TableBodyRow(line, widths);
+        }
+        idx++;
+      }
+    }
+
     protected static TextAsset TextAssetField(TextAsset asset)
     {
       EditorGUILayout.BeginVertical(GUILayout.Width(400));
