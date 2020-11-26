@@ -151,8 +151,22 @@ namespace Enginn
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-      client.Headers.Add("Authorization", $"Bearer {ProjectSettings.GetProjectApiToken()}");
+      client.Headers.Add("Authorization", $"Bearer {GetProjectApiToken()}");
       return client;
+    }
+
+    private static string projectApiToken = null;
+    public static void SetProjectApiToken(string token)
+    {
+      projectApiToken = token;
+    }
+    public static string GetProjectApiToken()
+    {
+      if(projectApiToken == null)
+      {
+        projectApiToken = ProjectSettings.GetProjectApiToken();
+      }
+      return projectApiToken;
     }
 
   }

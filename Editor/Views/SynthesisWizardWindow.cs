@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
 
@@ -368,7 +370,7 @@ namespace Enginn
       }
     }
 
-    private void DoExport()
+    private async void DoExport()
     {
       // exit if already started
       if (exportStarted)
@@ -378,33 +380,56 @@ namespace Enginn
 
       // start it
       exportStarted = true;
-      float exportTasksCount = (float) characterSyntheses.Count;
-      int exportTasksDone = 0;
+
+      var synthesisTasks = new List<Task>();
+      int synthesis_idx = 0;
       foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
       {
-        if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
-        {
-          Debug.Log($"Result file for {characterSynthesis.GetSlug()} already existing: skip it");
-        } else {
-          if(characterSynthesis.Create())
-          {
-            if(characterSynthesis.DownloadResultFile())
-            {
-              Debug.Log("result file created");
-            } else {
-              Debug.LogError("result file couldn't be downloaded");
-            }
-          } else {
-            Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
-          }
-        }
+        synthesisTasks.Add(PerformSynthesis(synthesis_idx));
+        synthesis_idx++;
+      }
 
-        // in any case, go to the next one
-        System.Threading.Thread.Sleep(1000);
-        exportTasksDone++;
-        exportProgress = exportTasksDone / exportTasksCount;
+      while (synthesisTasks.Count > 0)
+      {
+        Task finishedTask = await Task.WhenAny(synthesisTasks);
+        Debug.Log($"A task finished: {finishedTask}");
+        synthesisTasks.Remove(finishedTask);
+        exportProgress = (characterSyntheses.Count - synthesisTasks.Count) / ((float) characterSyntheses.Count);
         Repaint();
       }
+      Debug.Log("All tasks are finished");
+    }
+
+    private async Task PerformSynthesis(int idx)
+    {
+      Debug.Log($"Begin performing synthesis #{idx}");
+      await Task.Run( () => {
+        try
+        {
+          CharacterSynthesis characterSynthesis = characterSyntheses[idx];
+
+          if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
+          {
+            Debug.Log($"Result file for {characterSynthesis.GetSlug()} already existing: skip it");
+          } else {
+            Debug.Log("Create synthesis");
+            if(characterSynthesis.Create())
+            {
+              Debug.Log("Result file available");
+              if(characterSynthesis.DownloadResultFile())
+              {
+                Debug.Log("result file created");
+              } else {
+                Debug.LogError("result file couldn't be downloaded");
+              }
+            } else {
+              Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
+            }
+          }
+        } catch (Exception e) {
+          Debug.LogError($"ERROR: {e}");
+        }
+      });
     }
 
   }

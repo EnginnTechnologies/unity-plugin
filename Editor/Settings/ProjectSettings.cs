@@ -42,6 +42,8 @@ namespace Enginn
     private void SetProjectApiToken(string projectApiToken)
     {
       m_ProjectApiToken = projectApiToken;
+      // we need this for background tasks
+      Api.SetProjectApiToken(projectApiToken);
     }
 
   }
