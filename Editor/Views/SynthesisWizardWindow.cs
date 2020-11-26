@@ -22,12 +22,21 @@ namespace Enginn
       UnityAssets = 1
     }
 
+    private Dictionary<int, Character> characters;
+
     private int step = 0;
     private ImportMethod importMethod = ImportMethod.None;
     private ExportMethod exportMethod = ExportMethod.None;
+    private bool replaceExistingFiles = false;
 
     private TextAsset importFile;
-    private List<Dictionary<string, string>> importFileContent;
+
+    private List<CharacterSynthesis> characterSyntheses;
+
+    private bool importFileRead = false;
+
+    private float exportProgress = 0.7f;
+    private bool exportStarted = false;
 
     public SynthesisWizardWindow()
     {
@@ -95,10 +104,6 @@ namespace Enginn
       GUILayout.Space(50);
 
       BeginCenter();
-      if(importFile == null)
-      {
-        importFileContent = null;
-      }
       importFile = TextAssetField(importFile);
       EndCenter();
     }
@@ -116,22 +121,34 @@ namespace Enginn
       {
         "Line",
         "Slug",
+        "Character",
         "Text"
       };
       List<int> widths = new List<int>()
       {
         50,
         150,
-        200
+        150,
+        450
       };
 
       TableHeaderRow(headers, widths);
 
-      int line_idx = 0;
-      foreach (Dictionary<string, string> line in GetImportFileContent())
+      foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
       {
-        line_idx++;
-        List<string> values = new List<string>(){line_idx.ToString(), line["slug"], line["text"]};
+        string characterName;
+        if (characters.ContainsKey(characterSynthesis.character_id))
+        {
+          characterName = characters[characterSynthesis.character_id].name;
+        } else {
+          characterName = $"Unknown ID {characterSynthesis.character_id}";
+        }
+        List<string> values = new List<string>(){
+          characterSynthesis.GetImportFileLine().ToString(),
+          characterSynthesis.GetSlug(),
+          characterName,
+          characterSynthesis.text
+        };
         TableBodyRow(values, widths);
       }
 
@@ -139,25 +156,72 @@ namespace Enginn
       EndCenter();
     }
 
-    private List<Dictionary<string, string>> GetImportFileContent()
-    {
-      if(importFile == null)
-      {
-        return null;
-      }
-      if(importFileContent == null)
-      {
-        importFileContent = DictionaryCSVReader.FromString(importFile.text);
-      }
-      return importFileContent;
-    }
-
     void OnGUIContentStep4()
     {
+      GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
+      radioStyle.padding = new RectOffset(20, 0, 0, 0);
+
+      GUILayout.Space(50);
+
+      P("Select an export method");
+      GUILayout.Space(10);
+      BeginCenter();
+      exportMethod = (ExportMethod) GUILayout.SelectionGrid(
+        (int) exportMethod,
+        (new[] {"Files (named by slug)", "Unity assets"}),
+        1,
+        radioStyle
+      );
+      EndCenter();
+
+      P("What should happen if the file already exists?");
+      GUILayout.Space(10);
+      BeginCenter();
+      replaceExistingFiles = 1 == GUILayout.SelectionGrid(
+        replaceExistingFiles ? 1 : 0,
+        (new[] {"Don't synthesize (skip the line)", "Replace the existing file"}),
+        1,
+        radioStyle
+      );
+      EndCenter();
     }
 
     void OnGUIContentStep5()
     {
+      if (exportStarted)
+      {
+
+        if (exportProgress < 1)
+        {
+          P("Synthesis in progress, please wait");
+        } else {
+          P("Synthesis done, you can close this window");
+        }
+
+        GUILayout.Space(50);
+
+        BeginCenter();
+        EditorGUI.ProgressBar(
+          EditorGUILayout.GetControlRect(false, 20, GUILayout.Width(200)),
+          exportProgress,
+          $"{exportProgress*100}%"
+        );
+        EndCenter();
+
+      } else {
+
+        P($"You are about to perform {characterSyntheses.Count} syntheses");
+
+        GUILayout.Space(50);
+
+        BeginCenter();
+        if (GUILayout.Button("Start synthesis", ButtonStyle()))
+        {
+          DoExport();
+        }
+        EndCenter();
+
+      }
     }
 
     private GUILayoutOption ButtonStyle()
@@ -191,7 +255,14 @@ namespace Enginn
 
       if(step == 5)
       {
-        if(GUILayout.Button("Stop", ButtonStyle()))
+        string buttonText;
+        if (exportProgress < 1)
+        {
+          buttonText = "Cancel";
+        } else {
+          buttonText = "Close";
+        }
+        if(GUILayout.Button(buttonText, ButtonStyle()))
         {
           Close();
         }
@@ -242,9 +313,100 @@ namespace Enginn
       // verifications to prevent going to the next step
       if(testCanNext())
       {
+        // things to do before
+        switch(step)
+        {
+          // case 0: // things to do before selecting the import method
+          // case 1: // things to do before selecting the import file
+          case 2: // things to do before displaying the import file content
+            importFileRead = false;
+            FetchCharacters();
+            ReadImportFile();
+            break;
+          // case 3: // things to do before selecting the export method
+          case 4: // things to do before performing the export
+            exportProgress = 0f;
+            exportStarted = false;
+            break;
+        }
         step++;
       }
     }
+
+    // ------------------------------------------------------------------------
+    // METHODS
+    // ------------------------------------------------------------------------
+
+    private void FetchCharacters()
+    {
+      characters = new Dictionary<int, Character>();
+      foreach (Character character in Api.GetCharacters())
+      {
+        characters[character.id] = character;
+      }
+    }
+
+    private void ReadImportFile()
+    {
+      if(importFile == null || importFileRead)
+      {
+        return;
+      }
+
+      importFileRead = true;
+      int line_idx = 0;
+      characterSyntheses = new List<CharacterSynthesis>();
+      foreach (Dictionary<string, string> line in DictionaryCSVReader.FromString(importFile.text))
+      {
+        line_idx++;
+        CharacterSynthesis characterSynthesis = new CharacterSynthesis();
+        characterSynthesis.text = line["text"];
+        characterSynthesis.character_id = int.Parse(line["character_id"]);
+        characterSynthesis.SetSlug(line["slug"]);
+        characterSynthesis.SetImportFileLine(line_idx);
+        characterSyntheses.Add(characterSynthesis);
+      }
+    }
+
+    private void DoExport()
+    {
+      // exit if already started
+      if (exportStarted)
+      {
+        return;
+      }
+
+      // start it
+      exportStarted = true;
+      float exportTasksCount = (float) characterSyntheses.Count;
+      int exportTasksDone = 0;
+      foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
+      {
+        if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
+        {
+          Debug.Log($"Result file for {characterSynthesis.GetSlug()} already existing: skip it");
+        } else {
+          if(characterSynthesis.Create())
+          {
+            if(characterSynthesis.DownloadResultFile())
+            {
+              Debug.Log("result file created");
+            } else {
+              Debug.LogError("result file couldn't be downloaded");
+            }
+          } else {
+            Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
+          }
+        }
+
+        // in any case, go to the next one
+        System.Threading.Thread.Sleep(1000);
+        exportTasksDone++;
+        exportProgress = exportTasksDone / exportTasksCount;
+        Repaint();
+      }
+    }
+
   }
 
 }

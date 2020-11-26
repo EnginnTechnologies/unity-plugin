@@ -152,7 +152,7 @@ namespace Enginn
       tableHeaderStyle.richText = true;
       tableHeaderStyle.fontSize = 12;
       tableHeaderStyle.fontStyle = FontStyle.Bold;
-      tableHeaderStyle.alignment = TextAnchor.MiddleCenter;
+      tableHeaderStyle.alignment = TextAnchor.MiddleLeft;
       tableHeaderStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
       tableHeaderStyle.normal.textColor = Color.white;
       tableHeaderStyle.normal.background = MakeTexture(
@@ -186,7 +186,7 @@ namespace Enginn
       tableBodyStyle.fixedWidth = width;
       tableBodyStyle.richText = true;
       tableBodyStyle.fontSize = 12;
-      tableBodyStyle.alignment = TextAnchor.MiddleCenter;
+      tableBodyStyle.alignment = TextAnchor.MiddleLeft;
       tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
       tableBodyStyle.normal.textColor = Color.white;
 

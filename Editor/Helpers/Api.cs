@@ -134,8 +134,9 @@ namespace Enginn
 
       if(File.Exists(path))
       {
-        Debug.LogError($"File at {path} already exists");
-        return false;
+        // Debug.LogError($"File at {path} already exists");
+        // return false;
+        File.Delete(path);
       }
 
       File.WriteAllBytes(path, data);
