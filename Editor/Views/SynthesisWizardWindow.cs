@@ -36,9 +36,11 @@ namespace Enginn
     private List<CharacterSynthesis> characterSyntheses;
 
     private bool importFileRead = false;
+    private List<string> importFileErrors;
 
     private float exportProgress = 0.7f;
     private bool exportStarted = false;
+    private List<string> exportErrors;
 
     public SynthesisWizardWindow()
     {
@@ -117,44 +119,58 @@ namespace Enginn
       GUILayout.Space(50);
 
       BeginCenter();
-      EditorGUILayout.BeginVertical();
 
-      List<string> headers = new List<string>()
+      if (importFileErrors.Count > 0)
       {
-        "Line",
-        "Slug",
-        "Character",
-        "Text"
-      };
-      List<int> widths = new List<int>()
-      {
-        50,
-        150,
-        150,
-        450
-      };
 
-      TableHeaderRow(headers, widths);
-
-      foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
-      {
-        string characterName;
-        if (characters.ContainsKey(characterSynthesis.character_id))
+        foreach (string error in importFileErrors)
         {
-          characterName = characters[characterSynthesis.character_id].name;
-        } else {
-          characterName = $"Unknown ID {characterSynthesis.character_id}";
+          P($"<color=red>{error}</color>");
         }
-        List<string> values = new List<string>(){
-          characterSynthesis.GetImportFileLine().ToString(),
-          characterSynthesis.GetSlug(),
-          characterName,
-          characterSynthesis.text
+
+      } else {
+
+        EditorGUILayout.BeginVertical();
+
+        List<string> headers = new List<string>()
+        {
+          "Line",
+          "Slug",
+          "Character",
+          "Text"
         };
-        TableBodyRow(values, widths);
+        List<int> widths = new List<int>()
+        {
+          50,
+          150,
+          150,
+          450
+        };
+
+        TableHeaderRow(headers, widths);
+
+        foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
+        {
+          string characterName;
+          if (characters.ContainsKey(characterSynthesis.character_id))
+          {
+            characterName = characters[characterSynthesis.character_id].name;
+          } else {
+            characterName = $"Unknown ID {characterSynthesis.character_id}";
+          }
+          List<string> values = new List<string>(){
+            characterSynthesis.GetImportFileLine().ToString(),
+            characterSynthesis.GetSlug(),
+            characterName,
+            characterSynthesis.text
+          };
+          TableBodyRow(values, widths);
+        }
+
+        EditorGUILayout.EndVertical();
+
       }
 
-      EditorGUILayout.EndVertical();
       EndCenter();
     }
 
@@ -203,11 +219,25 @@ namespace Enginn
         GUILayout.Space(50);
 
         BeginCenter();
+        EditorGUILayout.BeginVertical();
+        BeginCenter();
         EditorGUI.ProgressBar(
-          EditorGUILayout.GetControlRect(false, 20, GUILayout.Width(200)),
+          EditorGUILayout.GetControlRect(false, 20, GUILayout.Width(400)),
           exportProgress,
-          $"{exportProgress*100}%"
+          $"{exportProgress * characterSyntheses.Count} / {characterSyntheses.Count}"
         );
+        EndCenter();
+        GUILayout.Space(10);
+        BeginCenter();
+        EditorGUILayout.BeginVertical();
+        foreach (string error in exportErrors)
+        {
+          P($"<color=red>{error}</color>");
+
+        }
+        EditorGUILayout.EndVertical();
+        EndCenter();
+        EditorGUILayout.EndVertical();
         EndCenter();
 
       } else {
@@ -291,6 +321,12 @@ namespace Enginn
             return false;
           }
           break;
+        case 3:
+          if(importFileErrors.Count > 0)
+          {
+            return false;
+          }
+          break;
         case 4:
           if(exportMethod == ExportMethod.None)
           {
@@ -322,6 +358,7 @@ namespace Enginn
           // case 1: // things to do before selecting the import file
           case 2: // things to do before displaying the import file content
             importFileRead = false;
+            importFileErrors = new List<string>();
             FetchCharacters();
             ReadImportFile();
             break;
@@ -361,6 +398,31 @@ namespace Enginn
       foreach (Dictionary<string, string> line in DictionaryCSVReader.FromString(importFile.text))
       {
         line_idx++;
+
+        // checks
+        if (line_idx == 1)
+        {
+          if (!line.ContainsKey("text"))
+          {
+            Debug.LogError("Column \"text\" not found in file");
+            importFileErrors.Add("Column \"text\" not found in file");
+          }
+          if (!line.ContainsKey("character_id"))
+          {
+            Debug.LogError("Column \"character_id\" not found in file");
+            importFileErrors.Add("Column \"character_id\" not found in file");
+          }
+          if (!line.ContainsKey("slug"))
+          {
+            Debug.LogError("Column \"slug\" not found in file");
+            importFileErrors.Add("Column \"slug\" not found in file");
+          }
+          if (importFileErrors.Count > 0)
+          {
+            return;
+          }
+        }
+
         CharacterSynthesis characterSynthesis = new CharacterSynthesis();
         characterSynthesis.text = line["text"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
@@ -380,6 +442,7 @@ namespace Enginn
 
       // start it
       exportStarted = true;
+      exportErrors = new List<string>();
 
       var synthesisTasks = new List<Task>();
       int synthesis_idx = 0;
@@ -392,17 +455,14 @@ namespace Enginn
       while (synthesisTasks.Count > 0)
       {
         Task finishedTask = await Task.WhenAny(synthesisTasks);
-        Debug.Log($"A task finished: {finishedTask}");
         synthesisTasks.Remove(finishedTask);
         exportProgress = (characterSyntheses.Count - synthesisTasks.Count) / ((float) characterSyntheses.Count);
         Repaint();
       }
-      Debug.Log("All tasks are finished");
     }
 
     private async Task PerformSynthesis(int idx)
     {
-      Debug.Log($"Begin performing synthesis #{idx}");
       await Task.Run( () => {
         try
         {
@@ -410,23 +470,24 @@ namespace Enginn
 
           if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
           {
-            Debug.Log($"Result file for {characterSynthesis.GetSlug()} already existing: skip it");
+            Debug.Log($"Audio file for {characterSynthesis.GetSlug()} already existing: skip it");
           } else {
-            Debug.Log("Create synthesis");
             if(characterSynthesis.Create())
             {
-              Debug.Log("Result file available");
               if(characterSynthesis.DownloadResultFile())
               {
-                Debug.Log("result file created");
+                // Debug.Log("result file created");
               } else {
                 Debug.LogError("result file couldn't be downloaded");
+                exportErrors.Add($"Audio file for {characterSynthesis.GetSlug()} couldn't be downloaded");
               }
             } else {
               Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
+              exportErrors.Add($"Synthesis error for {characterSynthesis.GetSlug()}");
             }
           }
         } catch (Exception e) {
+          exportErrors.Add($"Synthesis error for line {idx+1}: {e}");
           Debug.LogError($"ERROR: {e}");
         }
       });
