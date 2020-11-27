@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -222,6 +223,32 @@ namespace Enginn
         }
         idx++;
       }
+    }
+
+    protected string FilePathField(string currentPath)
+    {
+      EditorGUILayout.BeginVertical();
+      if (!String.IsNullOrEmpty(currentPath))
+      {
+        BeginCenter();
+        P($"Selected file: {currentPath}");
+        EndCenter();
+      }
+      string buttonLabel;
+      if (String.IsNullOrEmpty(currentPath))
+      {
+        buttonLabel = "Select a file";
+      } else {
+        buttonLabel = "Select another file";
+      }
+      BeginCenter();
+      if (GUILayout.Button(buttonLabel, GUILayout.Width(200)))
+      {
+        return EditorUtility.OpenFilePanel(buttonLabel, "", "csv");
+      }
+      EndCenter();
+      EditorGUILayout.EndVertical();
+      return null;
     }
 
     protected static TextAsset TextAssetField(TextAsset asset)

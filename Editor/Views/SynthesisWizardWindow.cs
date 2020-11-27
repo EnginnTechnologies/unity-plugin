@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEditor;
@@ -31,7 +32,8 @@ namespace Enginn
     private ExportMethod exportMethod = ExportMethod.None;
     private bool replaceExistingFiles = false;
 
-    private TextAsset importFile;
+    private TextAsset importAsset;
+    private string importPath;
 
     private List<CharacterSynthesis> characterSyntheses;
 
@@ -103,13 +105,37 @@ namespace Enginn
 
     void OnGUIContentStep2()
     {
-      P("Select an existing asset");
+      if (importMethod == ImportMethod.UnityAssets)
+      {
 
-      GUILayout.Space(50);
+        P("Select an existing asset");
 
-      BeginCenter();
-      importFile = TextAssetField(importFile);
-      EndCenter();
+        GUILayout.Space(50);
+
+        BeginCenter();
+        importAsset = TextAssetField(importAsset);
+        EndCenter();
+
+      } else {
+
+        P("Please select the file you wish to import.");
+
+        GUILayout.Space(50);
+
+        BeginCenter();
+        SetImportPath(FilePathField(importPath));
+        EndCenter();
+
+      }
+    }
+
+    void SetImportPath(string newImportPath)
+    {
+      if (!String.IsNullOrEmpty(newImportPath))
+      {
+        Debug.Log($"Set importPath to \"{newImportPath}\"");
+        importPath = newImportPath;
+      }
     }
 
     void OnGUIContentStep3()
@@ -321,6 +347,23 @@ namespace Enginn
             return false;
           }
           break;
+        case 2:
+          switch (importMethod)
+          {
+            case ImportMethod.UnityAssets:
+              if (importAsset == null)
+              {
+                return false;
+              }
+              break;
+            case ImportMethod.CSV:
+              if (String.IsNullOrEmpty(importPath))
+              {
+                return false;
+              }
+              break;
+          }
+          break;
         case 3:
           if(importFileErrors.Count > 0)
           {
@@ -355,7 +398,10 @@ namespace Enginn
         switch(step)
         {
           // case 0: // things to do before selecting the import method
-          // case 1: // things to do before selecting the import file
+          case 1: // things to do before selecting the import file
+            importPath = null;
+            importAsset = null;
+            break;
           case 2: // things to do before displaying the import file content
             importFileRead = false;
             importFileErrors = new List<string>();
@@ -387,7 +433,7 @@ namespace Enginn
 
     private void ReadImportFile()
     {
-      if(importFile == null || importFileRead)
+      if(importFileRead)
       {
         return;
       }
@@ -395,7 +441,21 @@ namespace Enginn
       importFileRead = true;
       int line_idx = 0;
       characterSyntheses = new List<CharacterSynthesis>();
-      foreach (Dictionary<string, string> line in DictionaryCSVReader.FromString(importFile.text))
+
+      string importFileContent = null;
+      switch (importMethod)
+      {
+        case ImportMethod.UnityAssets:
+          importFileContent = importAsset.text;
+          break;
+        case ImportMethod.CSV:
+          StreamReader reader = new StreamReader(importPath);
+          importFileContent = reader.ReadToEnd();
+          reader.Close();
+          break;
+      }
+
+      foreach (Dictionary<string, string> line in DictionaryCSVReader.FromString(importFileContent))
       {
         line_idx++;
 
