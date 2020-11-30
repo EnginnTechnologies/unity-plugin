@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
@@ -48,7 +49,6 @@ namespace Enginn
         pStyle = new GUIStyle();
         pStyle.richText = true;
         pStyle.fontSize = 14;
-        pStyle.alignment = TextAnchor.MiddleCenter;
         pStyle.padding = new RectOffset(0, 0, 10, 10); // left, right, top, bottom
         pStyle.normal.textColor = Color.white;
       }
@@ -67,6 +67,11 @@ namespace Enginn
       return formLabelStyle;
     }
 
+    protected GUILayoutOption ButtonStyle(int width = 100)
+    {
+      return GUILayout.Width(width);
+    }
+
     protected static void H1(string content)
     {
       GUILayout.Label(content, H1Style());
@@ -77,8 +82,10 @@ namespace Enginn
       GUILayout.Label(content, H2Style());
     }
 
-    protected static void P(string content)
+    protected static void P(string content, TextAnchor alignment = TextAnchor.MiddleCenter)
     {
+      GUIStyle style = PStyle();
+      style.alignment = alignment;
       GUILayout.Label(content, PStyle());
     }
 
@@ -143,6 +150,128 @@ namespace Enginn
         value,
         GUILayout.Width(400)
       );
+    }
+
+    public void TableHeaderCell(string content, int width)
+    {
+      GUIStyle tableHeaderStyle = new GUIStyle();
+      tableHeaderStyle.fixedWidth = width;
+      tableHeaderStyle.richText = true;
+      tableHeaderStyle.fontSize = 12;
+      tableHeaderStyle.fontStyle = FontStyle.Bold;
+      tableHeaderStyle.alignment = TextAnchor.MiddleLeft;
+      tableHeaderStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      tableHeaderStyle.normal.textColor = Color.white;
+      tableHeaderStyle.normal.background = MakeTexture(
+        width,
+        1, // height
+        new Color(1.0f, 1.0f, 1.0f, 0.1f)
+      );
+
+      EditorGUILayout.LabelField(
+        content,
+        tableHeaderStyle,
+        GUILayout.Width(width)
+      );
+    }
+
+    public void TableHeaderRow(List<string> contents, List<int> widths)
+    {
+      EditorGUILayout.BeginHorizontal();
+      int idx = 0;
+      foreach (string content in contents)
+      {
+        TableHeaderCell(content, widths[idx]);
+        idx++;
+      }
+      EditorGUILayout.EndHorizontal();
+    }
+
+    public void TableBodyCell(string content, int width)
+    {
+      GUIStyle tableBodyStyle = new GUIStyle();
+      tableBodyStyle.fixedWidth = width;
+      tableBodyStyle.richText = true;
+      tableBodyStyle.fontSize = 12;
+      tableBodyStyle.alignment = TextAnchor.MiddleLeft;
+      tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      tableBodyStyle.normal.textColor = Color.white;
+
+      EditorGUILayout.LabelField(
+        content,
+        tableBodyStyle,
+        GUILayout.Width(width)
+      );
+    }
+
+    public void TableBodyRow(List<string> contents, List<int> widths)
+    {
+      EditorGUILayout.BeginHorizontal();
+      int idx = 0;
+      foreach (string content in contents)
+      {
+        TableBodyCell(content, widths[idx]);
+        idx++;
+      }
+      EditorGUILayout.EndHorizontal();
+    }
+
+    public void Table(List<List<string>> data, List<int> widths)
+    {
+      int idx = 0;
+      foreach (List<string> line in data)
+      {
+        if (idx == 0)
+        {
+          TableHeaderRow(line, widths);
+        } else {
+          TableBodyRow(line, widths);
+        }
+        idx++;
+      }
+    }
+
+    protected string FilePathField(string currentPath)
+    {
+      EditorGUILayout.BeginVertical();
+      if (!String.IsNullOrEmpty(currentPath))
+      {
+        BeginCenter();
+        P($"Selected file: {currentPath}");
+        EndCenter();
+      }
+      string buttonLabel;
+      if (String.IsNullOrEmpty(currentPath))
+      {
+        buttonLabel = "Select a file";
+      } else {
+        buttonLabel = "Select another file";
+      }
+      BeginCenter();
+      if (GUILayout.Button(buttonLabel, GUILayout.Width(200)))
+      {
+        return EditorUtility.OpenFilePanel(buttonLabel, "", "csv");
+      }
+      EndCenter();
+      EditorGUILayout.EndVertical();
+      return null;
+    }
+
+    protected static TextAsset TextAssetField(TextAsset asset)
+    {
+      EditorGUILayout.BeginVertical(GUILayout.Width(200));
+
+      TextAsset result = (TextAsset)EditorGUILayout.ObjectField(
+        asset,
+        typeof(TextAsset),
+        false, // allowSceneObjects
+        GUILayout.Height(20),
+        GUILayout.ExpandWidth(true)
+      );
+
+      EditorGUILayout.EndVertical();
+
+      return result;
     }
 
     protected static Texture2D TextureField(Texture2D texture)

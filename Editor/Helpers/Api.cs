@@ -23,7 +23,6 @@ namespace Enginn
     public static void CreateCharacter(Character character) {
       var payload = "{\"character\": " + JsonUtility.ToJson(character) + "}";
       var response = NewClient().UploadString($"{GetApiBaseUrl()}/characters", payload);
-      Debug.Log($"API response: {response}");
       var apiResponse = JsonUtility.FromJson<ApiResponse<Character>>(response);
 
       switch (apiResponse.status)
@@ -33,7 +32,7 @@ namespace Enginn
           character.created_at = apiResponse.result.created_at;
           break;
         case 422:
-          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
           character.SetErrors(apiResponse.GetErrorsDictionnary());
           break;
         default:
@@ -48,7 +47,6 @@ namespace Enginn
         WebRequestMethods.Http.Put,
         payload
       );
-      Debug.Log($"API response: {response}");
       var apiResponse = JsonUtility.FromJson<ApiResponse<Character>>(response);
 
       switch (apiResponse.status)
@@ -71,7 +69,6 @@ namespace Enginn
         "DELETE",
         ""
       );
-      Debug.Log($"API response: {response}");
       var apiResponse = JsonUtility.FromJson<ApiResponse<Character>>(response);
 
       switch (apiResponse.status)
@@ -79,7 +76,7 @@ namespace Enginn
         case 204:
           break;
         case 422:
-          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
           character.SetErrors(apiResponse.GetErrorsDictionnary());
           break;
         default:
@@ -94,7 +91,6 @@ namespace Enginn
     public static void CreateCharacterSynthesis(CharacterSynthesis characterSynthesis) {
       var payload = "{\"character_synthesis\": " + JsonUtility.ToJson(characterSynthesis) + "}";
       var response = NewClient().UploadString($"{GetApiBaseUrl()}/character_syntheses", payload);
-      Debug.Log($"API response: {response}");
       var apiResponse = JsonUtility.FromJson<ApiResponse<CharacterSynthesis>>(response);
 
       switch (apiResponse.status)
@@ -106,7 +102,7 @@ namespace Enginn
           characterSynthesis.synthesis_result_file_url = apiResponse.result.synthesis_result_file_url;
           break;
         case 422:
-          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
           characterSynthesis.SetErrors(apiResponse.GetErrorsDictionnary());
           break;
         default:
@@ -134,24 +130,56 @@ namespace Enginn
 
       if(File.Exists(path))
       {
-        Debug.LogError($"File at {path} already exists");
-        return false;
+        // Debug.LogError($"File at {path} already exists");
+        // return false;
+        File.Delete(path);
       }
 
       File.WriteAllBytes(path, data);
       return true;
     }
 
-    private static string GetApiBaseUrl()
-    {
-      return EditorSettings.GetApiBaseUrl();
-    }
-
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-      client.Headers.Add("Authorization", $"Bearer {ProjectSettings.GetProjectApiToken()}");
+      client.Headers.Add("Authorization", $"Bearer {GetProjectApiToken()}");
       return client;
+    }
+
+    private static string apiBaseUrl = null;
+    public static void SetApiBaseUrl(string url)
+    {
+      apiBaseUrl = url;
+    }
+    public static string GetApiBaseUrl()
+    {
+      if (String.IsNullOrEmpty(apiBaseUrl))
+      {
+        apiBaseUrl = EditorSettings.GetApiBaseUrl();
+      }
+      return apiBaseUrl;
+    }
+
+    private static string projectApiToken = null;
+    public static void SetProjectApiToken(string token)
+    {
+      projectApiToken = token;
+    }
+    public static string GetProjectApiToken()
+    {
+      if (String.IsNullOrEmpty(projectApiToken))
+      {
+        projectApiToken = ProjectSettings.GetProjectApiToken();
+      }
+      return projectApiToken;
+    }
+
+    public static void refreshCache()
+    {
+      apiBaseUrl = null;
+      GetApiBaseUrl();
+      projectApiToken = null;
+      GetProjectApiToken();
     }
 
   }

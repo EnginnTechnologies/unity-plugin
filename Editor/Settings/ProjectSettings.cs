@@ -73,12 +73,19 @@ namespace Enginn
       var m_ProjectApiToken = m_ProjectSettings.FindProperty("m_ProjectApiToken");
       EditorGUILayout.PropertyField(m_ProjectApiToken, Styles.projectId);
       DoSave();
+      RefreshCaches(m_ProjectApiToken.stringValue);
     }
 
     private void DoSave()
     {
       m_ProjectSettings.ApplyModifiedProperties();
       AssetDatabase.SaveAssets();
+    }
+
+    private void RefreshCaches(string projectApiToken)
+    {
+      // we need this for background tasks
+      Api.SetProjectApiToken(projectApiToken);
     }
 
     // Register the SettingsProvider
