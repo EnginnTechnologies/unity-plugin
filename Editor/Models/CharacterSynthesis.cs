@@ -78,6 +78,20 @@ namespace Enginn
       return importFileLine;
     }
 
+    public string GetModifierName()
+    {
+      int idx = -1;
+      foreach (string synthesisModifier in Synthesis.Modifiers)
+      {
+        idx++;
+        if(modifier == synthesisModifier)
+        {
+          return Synthesis.ModifierNames[idx];
+        }
+      }
+      return "None";
+    }
+
   }
 
 }

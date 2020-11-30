@@ -164,14 +164,16 @@ namespace Enginn
           "Line",
           "Slug",
           "Character",
-          "Text"
+          "Text",
+          "Modifier"
         };
         List<int> widths = new List<int>()
         {
           50,
           150,
           150,
-          450
+          350,
+          100
         };
 
         TableHeaderRow(headers, widths);
@@ -189,7 +191,8 @@ namespace Enginn
             characterSynthesis.GetImportFileLine().ToString(),
             characterSynthesis.GetSlug(),
             characterName,
-            characterSynthesis.text
+            characterSynthesis.text,
+            characterSynthesis.GetModifierName()
           };
           TableBodyRow(values, widths);
         }
@@ -482,6 +485,11 @@ namespace Enginn
             Debug.LogError("Column \"slug\" not found in file");
             importFileErrors.Add("Column \"slug\" not found in file");
           }
+          if (!line.ContainsKey("modifier"))
+          {
+            Debug.LogError("Column \"modifier\" not found in file");
+            importFileErrors.Add("Column \"modifier\" not found in file");
+          }
           if (importFileErrors.Count > 0)
           {
             return;
@@ -490,6 +498,7 @@ namespace Enginn
 
         CharacterSynthesis characterSynthesis = new CharacterSynthesis();
         characterSynthesis.text = line["text"];
+        characterSynthesis.modifier = line["modifier"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
         characterSynthesis.SetSlug(line["slug"]);
         characterSynthesis.SetImportFileLine(line_idx);
