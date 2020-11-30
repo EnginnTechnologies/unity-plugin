@@ -311,8 +311,15 @@ namespace Enginn
 
       if(step < 5)
       {
+        string buttonText;
+        if (step == 0)
+        {
+          buttonText = "Start";
+        } else {
+          buttonText = "Next >";
+        }
         GUI.enabled = testCanNext();
-        if(GUILayout.Button("Next >", ButtonStyle()))
+        if(GUILayout.Button(buttonText, ButtonStyle()))
         {
           Next();
         }

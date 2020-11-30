@@ -9,7 +9,7 @@ namespace Enginn
   {
 
     private const string API_BASE_URL = "EnginnApiBaseUrl";
-    private const string DEFAULT_API_BASE_URL = "https://app.enginn.tech/api/v1/";
+    private const string DEFAULT_API_BASE_URL = "https://app.enginn.tech/api/v1";
 
     private static string apiBaseUrl = EditorPrefs.GetString(API_BASE_URL);
 
