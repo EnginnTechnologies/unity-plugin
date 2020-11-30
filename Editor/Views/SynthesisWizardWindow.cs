@@ -18,18 +18,18 @@ namespace Enginn
       UnityAssets = 1
     }
 
-    enum ExportMethod
-    {
-      None = -1,
-      Files = 0,
-      UnityAssets = 1
-    }
+    // enum ExportMethod
+    // {
+    //   None = -1,
+    //   Files = 0,
+    //   UnityAssets = 1
+    // }
 
     private Dictionary<int, Character> characters;
 
     private int step = 0;
     private ImportMethod importMethod = ImportMethod.None;
-    private ExportMethod exportMethod = ExportMethod.None;
+    // private ExportMethod exportMethod = ExportMethod.None;
     private bool replaceExistingFiles = false;
 
     private TextAsset importAsset;
@@ -214,15 +214,15 @@ namespace Enginn
       BeginCenter();
       EditorGUILayout.BeginVertical();
 
-      P("Select an export method", TextAnchor.MiddleLeft);
-      exportMethod = (ExportMethod) GUILayout.SelectionGrid(
-        (int) exportMethod,
-        (new[] {"Files (named by slug)", "Unity assets"}),
-        1,
-        radioStyle
-      );
+      // P("Select an export method", TextAnchor.MiddleLeft);
+      // exportMethod = (ExportMethod) GUILayout.SelectionGrid(
+      //   (int) exportMethod,
+      //   (new[] {"Files (named by slug)", "Unity assets"}),
+      //   1,
+      //   radioStyle
+      // );
 
-      GUILayout.Space(20);
+      // GUILayout.Space(20);
 
       P($"Result files will be put in {CharacterSynthesis.AbsoluteResultPath()}");
       P("What should happen if the file already exists?", TextAnchor.MiddleLeft);
@@ -378,12 +378,12 @@ namespace Enginn
             return false;
           }
           break;
-        case 4:
-          if(exportMethod == ExportMethod.None)
-          {
-            return false;
-          }
-          break;
+        // case 4:
+        //   if(exportMethod == ExportMethod.None)
+        //   {
+        //     return false;
+        //   }
+        //   break;
       }
       return true;
     }
