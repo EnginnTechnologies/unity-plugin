@@ -97,7 +97,7 @@ namespace Enginn
       GUILayout.Space(50);
 
       BeginCenter();
-      string[] selStrings = {"CSV file", "Unity assets"};
+      string[] selStrings = {"External CSV file", "Unity CSV asset"};
       GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
       radioStyle.padding = new RectOffset(20, 0, 0, 0);
       importMethod = (ImportMethod)GUILayout.SelectionGrid((int)importMethod, selStrings, 1, radioStyle);
@@ -109,7 +109,7 @@ namespace Enginn
       if (importMethod == ImportMethod.UnityAssets)
       {
 
-        P("Select an existing asset");
+        P("Select an existing CSV asset");
 
         GUILayout.Space(50);
 
@@ -119,7 +119,7 @@ namespace Enginn
 
       } else {
 
-        P("Please select the file you wish to import.");
+        P("Please select the CSV file you wish to import.");
 
         GUILayout.Space(50);
 
@@ -224,6 +224,7 @@ namespace Enginn
 
       GUILayout.Space(20);
 
+      P($"Result files will be put in {CharacterSynthesis.AbsoluteResultPath()}");
       P("What should happen if the file already exists?", TextAnchor.MiddleLeft);
       replaceExistingFiles = 1 == GUILayout.SelectionGrid(
         replaceExistingFiles ? 1 : 0,
