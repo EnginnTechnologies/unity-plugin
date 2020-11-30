@@ -49,7 +49,6 @@ namespace Enginn
         pStyle = new GUIStyle();
         pStyle.richText = true;
         pStyle.fontSize = 14;
-        pStyle.alignment = TextAnchor.MiddleCenter;
         pStyle.padding = new RectOffset(0, 0, 10, 10); // left, right, top, bottom
         pStyle.normal.textColor = Color.white;
       }
@@ -68,6 +67,11 @@ namespace Enginn
       return formLabelStyle;
     }
 
+    protected GUILayoutOption ButtonStyle(int width = 100)
+    {
+      return GUILayout.Width(width);
+    }
+
     protected static void H1(string content)
     {
       GUILayout.Label(content, H1Style());
@@ -78,8 +82,10 @@ namespace Enginn
       GUILayout.Label(content, H2Style());
     }
 
-    protected static void P(string content)
+    protected static void P(string content, TextAnchor alignment = TextAnchor.MiddleCenter)
     {
+      GUIStyle style = PStyle();
+      style.alignment = alignment;
       GUILayout.Label(content, PStyle());
     }
 
@@ -253,14 +259,14 @@ namespace Enginn
 
     protected static TextAsset TextAssetField(TextAsset asset)
     {
-      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+      EditorGUILayout.BeginVertical(GUILayout.Width(200));
 
       TextAsset result = (TextAsset)EditorGUILayout.ObjectField(
         asset,
         typeof(TextAsset),
         false, // allowSceneObjects
-        GUILayout.Height(200),
-        GUILayout.ExpandWidth(false)
+        GUILayout.Height(20),
+        GUILayout.ExpandWidth(true)
       );
 
       EditorGUILayout.EndVertical();

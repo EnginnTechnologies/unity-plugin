@@ -43,6 +43,7 @@ namespace Enginn
     private float exportProgress = 0.7f;
     private bool exportStarted = false;
     private List<string> exportErrors;
+    private int exportSkipped = 0;
 
     public SynthesisWizardWindow()
     {
@@ -207,26 +208,28 @@ namespace Enginn
 
       GUILayout.Space(50);
 
-      P("Select an export method");
-      GUILayout.Space(10);
       BeginCenter();
+      EditorGUILayout.BeginVertical();
+
+      P("Select an export method", TextAnchor.MiddleLeft);
       exportMethod = (ExportMethod) GUILayout.SelectionGrid(
         (int) exportMethod,
         (new[] {"Files (named by slug)", "Unity assets"}),
         1,
         radioStyle
       );
-      EndCenter();
 
-      P("What should happen if the file already exists?");
-      GUILayout.Space(10);
-      BeginCenter();
+      GUILayout.Space(20);
+
+      P("What should happen if the file already exists?", TextAnchor.MiddleLeft);
       replaceExistingFiles = 1 == GUILayout.SelectionGrid(
         replaceExistingFiles ? 1 : 0,
         (new[] {"Don't synthesize (skip the line)", "Replace the existing file"}),
         1,
         radioStyle
       );
+
+      EditorGUILayout.EndVertical();
       EndCenter();
     }
 
@@ -253,6 +256,12 @@ namespace Enginn
           $"{exportProgress * characterSyntheses.Count} / {characterSyntheses.Count}"
         );
         EndCenter();
+        if (exportSkipped > 0)
+        {
+          BeginCenter();
+          P($"({exportSkipped} already existing and skipped)");
+          EndCenter();
+        }
         GUILayout.Space(10);
         BeginCenter();
         EditorGUILayout.BeginVertical();
@@ -273,18 +282,13 @@ namespace Enginn
         GUILayout.Space(50);
 
         BeginCenter();
-        if (GUILayout.Button("Start synthesis", ButtonStyle()))
+        if (GUILayout.Button("Start synthesis", ButtonStyle(200)))
         {
           DoExport();
         }
         EndCenter();
 
       }
-    }
-
-    private GUILayoutOption ButtonStyle()
-    {
-      return GUILayout.Width(100);
     }
 
     protected override void OnGUIButtons()
@@ -412,6 +416,7 @@ namespace Enginn
           case 4: // things to do before performing the export
             exportProgress = 0f;
             exportStarted = false;
+            exportSkipped = 0;
             break;
         }
         step++;
@@ -500,6 +505,9 @@ namespace Enginn
         return;
       }
 
+      // Api cache will be used by threads so refresh it
+      Api.refreshCache();
+
       // start it
       exportStarted = true;
       exportErrors = new List<string>();
@@ -531,6 +539,7 @@ namespace Enginn
           if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
           {
             Debug.Log($"Audio file for {characterSynthesis.GetSlug()} already existing: skip it");
+            exportSkipped++;
           } else {
             if(characterSynthesis.Create())
             {

@@ -9,6 +9,7 @@ namespace Enginn
   {
 
     private const string API_BASE_URL = "EnginnApiBaseUrl";
+    private const string DEFAULT_API_BASE_URL = "https://app.enginn.tech/api/v1/";
 
     private static string apiBaseUrl = EditorPrefs.GetString(API_BASE_URL);
 
@@ -16,12 +17,19 @@ namespace Enginn
     {
       if (!String.IsNullOrEmpty(apiBaseUrl))
         return apiBaseUrl;
-      return "https://app.enginn.tech/api/v1/";
+      return DEFAULT_API_BASE_URL;
     }
 
     private static void SaveApiBaseUrl()
     {
       EditorPrefs.SetString(API_BASE_URL, apiBaseUrl);
+      RefreshCaches(apiBaseUrl);
+    }
+
+    private static void RefreshCaches(string apiBaseUrl)
+    {
+      // we need this for background tasks
+      Api.SetApiBaseUrl(apiBaseUrl);
     }
 
     [PreferenceItem("Enginn")]

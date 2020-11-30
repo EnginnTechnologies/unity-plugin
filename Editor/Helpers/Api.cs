@@ -139,16 +139,25 @@ namespace Enginn
       return true;
     }
 
-    private static string GetApiBaseUrl()
-    {
-      return EditorSettings.GetApiBaseUrl();
-    }
-
     private static WebClient NewClient() {
       var client = new WebClient();
       client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
       client.Headers.Add("Authorization", $"Bearer {GetProjectApiToken()}");
       return client;
+    }
+
+    private static string apiBaseUrl = null;
+    public static void SetApiBaseUrl(string url)
+    {
+      apiBaseUrl = url;
+    }
+    public static string GetApiBaseUrl()
+    {
+      if (String.IsNullOrEmpty(apiBaseUrl))
+      {
+        apiBaseUrl = EditorSettings.GetApiBaseUrl();
+      }
+      return apiBaseUrl;
     }
 
     private static string projectApiToken = null;
@@ -158,11 +167,19 @@ namespace Enginn
     }
     public static string GetProjectApiToken()
     {
-      if(projectApiToken == null)
+      if (String.IsNullOrEmpty(projectApiToken))
       {
         projectApiToken = ProjectSettings.GetProjectApiToken();
       }
       return projectApiToken;
+    }
+
+    public static void refreshCache()
+    {
+      apiBaseUrl = null;
+      GetApiBaseUrl();
+      projectApiToken = null;
+      GetProjectApiToken();
     }
 
   }
