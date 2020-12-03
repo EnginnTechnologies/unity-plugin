@@ -111,6 +111,31 @@ namespace Enginn
     }
 
     //-------------------------------------------------------------------------
+    // TEST SYNTHESES
+    //-------------------------------------------------------------------------
+
+    public static void CreateTestSynthesis(TestSynthesis testSynthesis) {
+      var payload = "{\"test_synthesis\": {\"synthesis_attributes\": " + JsonUtility.ToJson(testSynthesis) + "} }";
+      var response = NewClient().UploadString($"{GetApiBaseUrl()}/test_syntheses", payload);
+      var apiResponse = JsonUtility.FromJson<ApiResponse<TestSynthesis>>(response);
+
+      switch (apiResponse.status)
+      {
+        case 201:
+          testSynthesis.id = apiResponse.result.id;
+          testSynthesis.synthesis_id = apiResponse.result.synthesis_id;
+          testSynthesis.synthesis_result_file_url = apiResponse.result.synthesis_result_file_url;
+          break;
+        case 422:
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
+          testSynthesis.SetErrors(apiResponse.GetErrorsDictionnary());
+          break;
+        default:
+          throw new WebException($"API error {apiResponse.status}");
+      }
+    }
+
+    //-------------------------------------------------------------------------
     // HELPERS
     //-------------------------------------------------------------------------
 

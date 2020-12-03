@@ -89,6 +89,28 @@ namespace Enginn
       GUILayout.Label(content, PStyle());
     }
 
+    public void BeginColumns()
+    {
+      GUILayout.BeginHorizontal();
+    }
+
+    public void BeginColumn(int width = 300)
+    {
+      GUILayout.FlexibleSpace();
+      EditorGUILayout.BeginVertical(GUILayout.Width(width));
+    }
+
+    public void EndColumn()
+    {
+      EditorGUILayout.EndVertical();
+    }
+
+    public void EndColumns()
+    {
+      GUILayout.FlexibleSpace();
+      GUILayout.EndHorizontal();
+    }
+
     public void BeginCenter(GUIStyle style = null)
     {
       if(style == null)
@@ -113,16 +135,16 @@ namespace Enginn
       BeginCenter(style);
     }
 
-    public void FormLabel(string text)
+    public void FormLabel(string text, int width = 150)
     {
       EditorGUILayout.LabelField(
         text,
         FormLabelStyle(),
-        GUILayout.Width(150)
+        GUILayout.Width(width)
       );
     }
 
-    public int FormRadio(int selected, string[] texts)
+    public int FormRadio(int selected, string[] texts, int width = 400)
     {
       GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);
       radioStyle.padding = new RectOffset(20, 0, 0, 0);
@@ -132,23 +154,23 @@ namespace Enginn
         texts,
         1,
         radioStyle,
-        GUILayout.Width(400)
+        GUILayout.Width(width)
       );
     }
 
-    public string FormTextField(string text)
+    public string FormTextField(string text, int width = 400)
     {
       return EditorGUILayout.TextField(
         text,
-        GUILayout.Width(400)
+        GUILayout.Width(width)
       );
     }
 
-    public bool FormToggle(bool value)
+    public bool FormToggle(bool value, int width = 400)
     {
       return EditorGUILayout.Toggle(
         value,
-        GUILayout.Width(400)
+        GUILayout.Width(width)
       );
     }
 
@@ -231,7 +253,7 @@ namespace Enginn
       }
     }
 
-    protected string FilePathField(string currentPath)
+    protected string FilePathField(string currentPath, int width = 200)
     {
       EditorGUILayout.BeginVertical();
       if (!String.IsNullOrEmpty(currentPath))
@@ -248,7 +270,7 @@ namespace Enginn
         buttonLabel = "Select another file";
       }
       BeginCenter();
-      if (GUILayout.Button(buttonLabel, GUILayout.Width(200)))
+      if (GUILayout.Button(buttonLabel, GUILayout.Width(width)))
       {
         return EditorUtility.OpenFilePanel(buttonLabel, "", "csv");
       }
@@ -274,16 +296,17 @@ namespace Enginn
       return result;
     }
 
-    protected static Texture2D TextureField(Texture2D texture)
+    protected static Texture2D TextureField(Texture2D texture, int width = 400)
     {
-      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+      EditorGUILayout.BeginVertical(GUILayout.Width(width));
 
       Texture2D result = (Texture2D)EditorGUILayout.ObjectField(
         texture,
         typeof(Texture2D),
         false, // allowSceneObjects
-        GUILayout.Height(200),
-        GUILayout.ExpandWidth(false)
+        GUILayout.Height(width),
+        GUILayout.ExpandWidth(false),
+        GUILayout.Width(width)
       );
 
       EditorGUILayout.EndVertical();
@@ -291,12 +314,12 @@ namespace Enginn
       return result;
     }
 
-    protected void FormErrors(Dictionary<string, List<string>> errors)
+    protected void FormErrors(Dictionary<string, List<string>> errors, int width = 400)
     {
       GUIStyle style = new GUIStyle();
       style.richText = true;
 
-      EditorGUILayout.BeginVertical(GUILayout.Width(400));
+      EditorGUILayout.BeginVertical(GUILayout.Width(width));
 
       foreach(var error in errors)
       {
@@ -335,6 +358,24 @@ namespace Enginn
       result.Apply();
 
       return result;
+    }
+
+    // AUDIO PLAYER
+
+    private AudioPlayer audioPlayer;
+
+    protected AudioPlayer GetAudioPlayer()
+    {
+      if (audioPlayer == null)
+      {
+        GameObject obj = EditorUtility.CreateGameObjectWithHideFlags(
+          "AudioPlayer",
+          HideFlags.HideAndDontSave
+        );
+        audioPlayer = obj.AddComponent(typeof(AudioPlayer)) as AudioPlayer;
+      }
+
+      return audioPlayer;
     }
 
   }
