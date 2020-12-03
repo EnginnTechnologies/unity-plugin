@@ -360,11 +360,13 @@ namespace Enginn
       return result;
     }
 
-    // AUDIO PLAYER
+    //-------------------------------------------------------------------------
+    // AUDIO
+    //-------------------------------------------------------------------------
 
-    private AudioPlayer audioPlayer;
+    private AudioSource audioPlayer;
 
-    protected AudioPlayer GetAudioPlayer()
+    protected AudioSource GetAudioPlayer()
     {
       if (audioPlayer == null)
       {
@@ -372,10 +374,17 @@ namespace Enginn
           "AudioPlayer",
           HideFlags.HideAndDontSave
         );
-        audioPlayer = obj.AddComponent(typeof(AudioPlayer)) as AudioPlayer;
+        audioPlayer = obj.AddComponent(typeof(AudioSource)) as AudioSource;
       }
 
       return audioPlayer;
+    }
+
+    protected async void PlayRemoteAudio(string url)
+    {
+      AudioSource audioPlayer = GetAudioPlayer();
+      audioPlayer.clip = await Api.DownloadAudioClip(url);
+      audioPlayer.Play();
     }
 
   }

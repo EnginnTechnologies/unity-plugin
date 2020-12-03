@@ -244,7 +244,7 @@ namespace Enginn
       {
         if (testSynthesis.Create())
         {
-          GetAudioPlayer().Stream(testSynthesis.synthesis_result_file_url);
+          PlayRemoteAudio(testSynthesis.synthesis_result_file_url);
         } else {
           Debug.LogError($"Synthesis errors: {testSynthesis.GetErrorsAsJson()}");
         }
@@ -253,6 +253,7 @@ namespace Enginn
         textBeingTested = -1;
       }
     }
+
   }
 
 }

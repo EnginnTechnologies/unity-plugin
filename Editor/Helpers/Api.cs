@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Enginn
 {
@@ -162,6 +164,28 @@ namespace Enginn
 
       File.WriteAllBytes(path, data);
       return true;
+    }
+
+    public static async Task<AudioClip> DownloadAudioClip(string url)
+    {
+      UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(
+        url,
+        AudioType.WAV
+      );
+      www.SendWebRequest();
+      while (!www.isDone)
+      {
+        await Task.Delay(100);
+      }
+      if (!String.IsNullOrEmpty(www.error))
+      {
+        Debug.LogError($"Audio streaming error: {www.error}");
+        return null;
+      }
+      else
+      {
+        return DownloadHandlerAudioClip.GetContent(www);
+      }
     }
 
     private static WebClient NewClient() {
