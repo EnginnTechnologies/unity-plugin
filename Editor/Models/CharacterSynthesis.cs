@@ -13,13 +13,13 @@ namespace Enginn
 
     public int id;
     public string modifier = Synthesis.Modifier.None;
+    public string slug;
     public string text;
     public string created_at;
     public int character_id;
     public int synthesis_id;
     public string synthesis_result_file_url;
 
-    private string slug;
     private int importFileLine;
 
     public bool Create()
@@ -66,15 +66,6 @@ namespace Enginn
       }
       string filePath = ResultFilePath(fileName);
       return Api.DownloadWav(synthesis_result_file_url, filePath);
-    }
-
-    public void SetSlug(string value)
-    {
-      slug = value;
-    }
-    public string GetSlug()
-    {
-      return slug;
     }
 
     public void SetImportFileLine(int value)

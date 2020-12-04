@@ -26,7 +26,7 @@ namespace Enginn
     public NewCharacterSynthesisWindow()
     {
       titleContent = new GUIContent("Enginn - New synthesis");
-      fileName = DateTime.Now.ToString("yyyy-MM-dd_h:mm");
+      fileName = DateTime.Now.ToString("yyyy-MM-dd_h-mm");
     }
 
     protected override void OnGUITitle()
@@ -39,6 +39,12 @@ namespace Enginn
       P("Please choose a character and specify a text to perform the synthesis.");
 
       GUILayout.Space(50);
+
+      // SLUG
+      BeginCenteredFormField();
+      FormLabel("Slug");
+      characterSynthesis.slug = FormTextField(characterSynthesis.slug);
+      EndCenter();
 
       // CHARACTER
       BeginCenteredFormField();
@@ -106,6 +112,8 @@ namespace Enginn
       return (
         (
           characterSynthesis.character_id > 0
+        ) && (
+          !String.IsNullOrEmpty(characterSynthesis.slug)
         ) && (
           !String.IsNullOrEmpty(characterSynthesis.text)
         ) && (

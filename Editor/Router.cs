@@ -74,6 +74,16 @@ namespace Enginn
       window.Show();
     }
 
+    public static void SynthesisHistory()
+    {
+
+      // Get existing open window or if none, make a new one
+      SynthesisHistoryWindow window = (SynthesisHistoryWindow)EditorWindow.GetWindow(
+        typeof(SynthesisHistoryWindow)
+      );
+      window.Show();
+    }
+
   }
 
 }

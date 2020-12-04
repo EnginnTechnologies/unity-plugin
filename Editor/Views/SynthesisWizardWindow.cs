@@ -189,7 +189,7 @@ namespace Enginn
           }
           List<string> values = new List<string>(){
             characterSynthesis.GetImportFileLine().ToString(),
-            characterSynthesis.GetSlug(),
+            characterSynthesis.slug,
             characterName,
             characterSynthesis.text,
             characterSynthesis.GetModifierName()
@@ -508,7 +508,7 @@ namespace Enginn
         characterSynthesis.text = line["text"];
         characterSynthesis.modifier = line["modifier"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
-        characterSynthesis.SetSlug(line["slug"]);
+        characterSynthesis.slug = line["slug"];
         characterSynthesis.SetImportFileLine(line_idx);
         characterSyntheses.Add(characterSynthesis);
       }
@@ -555,7 +555,7 @@ namespace Enginn
 
           if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
           {
-            Debug.Log($"Audio file for {characterSynthesis.GetSlug()} already existing: skip it");
+            Debug.Log($"Audio file for {characterSynthesis.slug} already existing: skip it");
             exportSkipped++;
           } else {
             if(characterSynthesis.Create())
@@ -565,11 +565,11 @@ namespace Enginn
                 // Debug.Log("result file created");
               } else {
                 Debug.LogError("result file couldn't be downloaded");
-                exportErrors.Add($"Audio file for {characterSynthesis.GetSlug()} couldn't be downloaded");
+                exportErrors.Add($"Audio file for {characterSynthesis.slug} couldn't be downloaded");
               }
             } else {
               Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
-              exportErrors.Add($"Synthesis error for {characterSynthesis.GetSlug()}");
+              exportErrors.Add($"Synthesis error for {characterSynthesis.slug}");
             }
           }
         } catch (Exception e) {
