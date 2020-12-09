@@ -17,8 +17,6 @@ namespace Enginn
     private CharacterSynthesis characterSynthesis = new CharacterSynthesis();
     private int modifierIndex = 0;
 
-    private string fileName = "";
-
     // ------------------------------------------------------------------------
     // GUI
     // ------------------------------------------------------------------------
@@ -26,7 +24,6 @@ namespace Enginn
     public NewCharacterSynthesisWindow()
     {
       titleContent = new GUIContent("Enginn - New synthesis");
-      fileName = DateTime.Now.ToString("yyyy-MM-dd_h-mm");
     }
 
     protected override void OnGUITitle()
@@ -43,7 +40,7 @@ namespace Enginn
       // SLUG
       BeginCenteredFormField();
       FormLabel("Slug");
-      characterSynthesis.slug = FormTextField(characterSynthesis.slug);
+      characterSynthesis.text_slug = FormTextField(characterSynthesis.text_slug);
       EndCenter();
 
       // CHARACTER
@@ -62,12 +59,6 @@ namespace Enginn
       BeginCenteredFormField();
       FormLabel("Modifier");
       SetModifierIndex(FormRadio(modifierIndex, Synthesis.ModifierNames));
-      EndCenter();
-
-      // FILE NAME
-      BeginCenteredFormField();
-      FormLabel("File name");
-      fileName = FormTextField(fileName);
       EndCenter();
 
       // ERRORS
@@ -113,11 +104,9 @@ namespace Enginn
         (
           characterSynthesis.character_id > 0
         ) && (
-          !String.IsNullOrEmpty(characterSynthesis.slug)
+          !String.IsNullOrEmpty(characterSynthesis.text_slug)
         ) && (
           !String.IsNullOrEmpty(characterSynthesis.text)
-        ) && (
-          !String.IsNullOrEmpty(fileName)
         )
       );
     }
@@ -126,7 +115,7 @@ namespace Enginn
     {
       if(characterSynthesis.Create())
       {
-        if(characterSynthesis.DownloadResultFile(fileName))
+        if(characterSynthesis.DownloadResultFile())
         {
           Close();
         } else {

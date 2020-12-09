@@ -189,7 +189,7 @@ namespace Enginn
           }
           List<string> values = new List<string>(){
             characterSynthesis.GetImportFileLine().ToString(),
-            characterSynthesis.slug,
+            characterSynthesis.text_slug,
             characterName,
             characterSynthesis.text,
             characterSynthesis.GetModifierName()
@@ -508,7 +508,7 @@ namespace Enginn
         characterSynthesis.text = line["text"];
         characterSynthesis.modifier = line["modifier"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
-        characterSynthesis.slug = line["slug"];
+        characterSynthesis.text_slug = line["slug"];
         characterSynthesis.SetImportFileLine(line_idx);
         characterSyntheses.Add(characterSynthesis);
       }
@@ -544,6 +544,9 @@ namespace Enginn
         exportProgress = (characterSyntheses.Count - synthesisTasks.Count) / ((float) characterSyntheses.Count);
         Repaint();
       }
+
+      // done
+      AssetDatabase.Refresh();
     }
 
     private async Task PerformSynthesis(int idx)
@@ -555,7 +558,7 @@ namespace Enginn
 
           if (!replaceExistingFiles && characterSynthesis.ResultFileExists())
           {
-            Debug.Log($"Audio file for {characterSynthesis.slug} already existing: skip it");
+            Debug.Log($"Audio file for {characterSynthesis.text_slug} already existing: skip it");
             exportSkipped++;
           } else {
             if(characterSynthesis.Create())
@@ -565,11 +568,11 @@ namespace Enginn
                 // Debug.Log("result file created");
               } else {
                 Debug.LogError("result file couldn't be downloaded");
-                exportErrors.Add($"Audio file for {characterSynthesis.slug} couldn't be downloaded");
+                exportErrors.Add($"Audio file for {characterSynthesis.text_slug} couldn't be downloaded");
               }
             } else {
               Debug.LogError($"CharacterSynthesis errors: {characterSynthesis.GetErrorsAsJson()}");
-              exportErrors.Add($"Synthesis error for {characterSynthesis.slug}");
+              exportErrors.Add($"Synthesis error for {characterSynthesis.text_slug}");
             }
           }
         } catch (Exception e) {

@@ -13,7 +13,7 @@ namespace Enginn
 
     public int id;
     public string modifier = Synthesis.Modifier.None;
-    public string slug;
+    public string text_slug;
     public string text;
     public string created_at;
     public int character_id;
@@ -39,11 +39,11 @@ namespace Enginn
     {
       if (String.IsNullOrEmpty(fileName))
       {
-        if (String.IsNullOrEmpty(slug))
+        if (String.IsNullOrEmpty(text_slug))
         {
           throw new System.ArgumentException("Neither fileName nor slug provided", "fileName");
         }
-        return $"{RESULT_PATH}/{slug}.wav";
+        return $"{RESULT_PATH}/{text_slug}.wav";
       }
       return $"{RESULT_PATH}/{fileName}.wav";
     }
