@@ -117,6 +117,7 @@ namespace Enginn
       {
         if(characterSynthesis.DownloadResultFile())
         {
+          AssetDatabase.Refresh();
           Close();
         } else {
           Debug.LogError("result file couldn't be downloaded");
