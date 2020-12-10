@@ -11,10 +11,7 @@ namespace Enginn
     public int id;
 
     public int color_id;
-    public string color_name;
-    public int color_r;
-    public int color_g;
-    public int color_b;
+    public ProjectColor color;
 
     public int character_syntheses_count;
 
@@ -52,19 +49,20 @@ namespace Enginn
       return ResultFile.DownloadFrom(slug, main_synthesis_result_file_url);
     }
 
-    public Color GetColor(float a = 1f)
+    public ProjectColor GetColor()
     {
-      return new Color(color_r / 255f, color_g / 255f, color_b / 255f, a);
+      return color;
     }
 
-    public Color GetTextColor()
+    public void SetColor(ProjectColor newColor)
     {
-      Color color = GetColor();
-      if (color.grayscale < 0.5)
+      color = newColor;
+
+      if (color == null)
       {
-        return Color.white;
+        color_id = 0;
       } else {
-        return Color.black;
+        color_id = color.id;
       }
     }
 

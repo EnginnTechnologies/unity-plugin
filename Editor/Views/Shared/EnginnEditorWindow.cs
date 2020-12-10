@@ -158,6 +158,16 @@ namespace Enginn
       );
     }
 
+    public ProjectColor FormColorField(ProjectColor selected, int width = 400)
+    {
+      return Project.GetColorFromOptionsIndex(
+        EditorGUILayout.Popup(
+          Project.GetColorOptionsIndex(selected),
+          Project.GetColorOptions()
+        )
+      );
+    }
+
     public string FormTextField(string text, int width = 400)
     {
       return EditorGUILayout.TextField(

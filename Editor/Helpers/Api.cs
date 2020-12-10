@@ -14,6 +14,15 @@ namespace Enginn
   {
 
     //-------------------------------------------------------------------------
+    // PROJECT
+    //-------------------------------------------------------------------------
+
+    public static Project GetProject() {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/project");
+      return JsonUtility.FromJson<ApiResponse<Project>>(response).result;
+    }
+
+    //-------------------------------------------------------------------------
     // CHARACTERS
     //-------------------------------------------------------------------------
 

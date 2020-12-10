@@ -45,7 +45,7 @@ namespace Enginn
       List<int> widths = new List<int>()
       {
         100,
-        100,
+        200,
         100,
         100,
         200,
@@ -66,29 +66,29 @@ namespace Enginn
 
           TableBodyCell(text.slug, widths[0]);
 
-          GUIStyle cellStyle = new GUIStyle();
-          if (text.color_id > 0)
+          if (text.color != null)
           {
+            GUIStyle cellStyle = new GUIStyle();
             cellStyle.normal.background = MakeTexture(
               widths[1],
               1, // height
-              text.GetColor()
+              text.GetColor().GetColor()
             );
-            cellStyle.normal.textColor = text.GetTextColor();
-          } else {
-            cellStyle.normal.textColor = Color.white;
+            cellStyle.normal.textColor = text.GetColor().GetTextColor();
+            cellStyle.fixedWidth = widths[1];
+            cellStyle.richText = true;
+            cellStyle.fontSize = 12;
+            cellStyle.clipping = TextClipping.Clip;
+            cellStyle.alignment = TextAnchor.MiddleLeft;
+            cellStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+            EditorGUILayout.LabelField(
+              text.GetColor().name,
+              cellStyle,
+              GUILayout.Width(widths[1]/2)
+            );
           }
-          cellStyle.fixedWidth = widths[1];
-          cellStyle.richText = true;
-          cellStyle.fontSize = 12;
-          cellStyle.clipping = TextClipping.Clip;
-          cellStyle.alignment = TextAnchor.MiddleLeft;
-          cellStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
-          EditorGUILayout.LabelField(
-            text.color_name,
-            cellStyle,
-            GUILayout.Width(widths[1])
-          );
+
+          text.SetColor(FormColorField(text.GetColor(), widths[1]/2));
 
           TableBodyCell(text.character_syntheses_count.ToString(), widths[2]);
           TableBodyCell(text.main_character_name, widths[3]);
