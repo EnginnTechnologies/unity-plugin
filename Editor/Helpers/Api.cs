@@ -138,6 +138,15 @@ namespace Enginn
     }
 
     //-------------------------------------------------------------------------
+    // TEXTS
+    //-------------------------------------------------------------------------
+
+    public static Text[] GetTexts() {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/texts");
+      return JsonUtility.FromJson<ApiResponse<Text[]>>(response).result;
+    }
+
+    //-------------------------------------------------------------------------
     // HELPERS
     //-------------------------------------------------------------------------
 

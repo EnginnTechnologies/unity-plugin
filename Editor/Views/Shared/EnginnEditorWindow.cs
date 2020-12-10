@@ -177,7 +177,12 @@ namespace Enginn
     public void TableHeaderCell(string content, int width)
     {
       GUIStyle tableHeaderStyle = new GUIStyle();
-      tableHeaderStyle.fixedWidth = width;
+      if (width > 0)
+      {
+        tableHeaderStyle.fixedWidth = width;
+      } else {
+
+      }
       tableHeaderStyle.richText = true;
       tableHeaderStyle.fontSize = 12;
       tableHeaderStyle.fontStyle = FontStyle.Bold;
@@ -193,7 +198,7 @@ namespace Enginn
       EditorGUILayout.LabelField(
         content,
         tableHeaderStyle,
-        GUILayout.Width(width)
+        GUILayout.MinWidth(20)
       );
     }
 
@@ -212,7 +217,12 @@ namespace Enginn
     public void TableBodyCell(string content, int width)
     {
       GUIStyle tableBodyStyle = new GUIStyle();
-      tableBodyStyle.fixedWidth = width;
+      if (width > 0)
+      {
+        tableBodyStyle.fixedWidth = width;
+      } else {
+
+      }
       tableBodyStyle.richText = true;
       tableBodyStyle.fontSize = 12;
       tableBodyStyle.alignment = TextAnchor.MiddleLeft;
@@ -222,7 +232,7 @@ namespace Enginn
       EditorGUILayout.LabelField(
         content,
         tableBodyStyle,
-        GUILayout.Width(width)
+        GUILayout.MinWidth(20)
       );
     }
 

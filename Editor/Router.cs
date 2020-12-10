@@ -84,6 +84,16 @@ namespace Enginn
       window.Show();
     }
 
+    public static void ListTexts()
+    {
+      // Get existing open window or if none, make a new one
+      ListTextsWindow window = (ListTextsWindow)EditorWindow.GetWindow(
+        typeof(ListTextsWindow)
+      );
+      window.FetchTexts();
+      window.Show();
+    }
+
   }
 
 }
