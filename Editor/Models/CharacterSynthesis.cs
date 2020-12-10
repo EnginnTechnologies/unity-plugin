@@ -28,44 +28,14 @@ namespace Enginn
       return id > 0;
     }
 
-    public static string AbsoluteResultPath()
+    public bool ResultFileExists()
     {
-      string assetsPath = Application.dataPath;
-      string rootPath = assetsPath.Substring(0, assetsPath.Length - "Assets".Length);
-      return rootPath + RESULT_PATH;
+      return ResultFile.Exists(text_slug);
     }
 
-    public string ResultFilePath(string fileName = null)
+    public bool DownloadResultFile()
     {
-      if (String.IsNullOrEmpty(fileName))
-      {
-        if (String.IsNullOrEmpty(text_slug))
-        {
-          throw new System.ArgumentException("Neither fileName nor slug provided", "fileName");
-        }
-        return $"{RESULT_PATH}/{text_slug}.wav";
-      }
-      return $"{RESULT_PATH}/{fileName}.wav";
-    }
-
-
-    public bool ResultFileExists(string fileName = null)
-    {
-      return File.Exists(ResultFilePath(fileName));
-    }
-
-    public bool DownloadResultFile(string fileName = null)
-    {
-      if (String.IsNullOrEmpty(synthesis_result_file_url))
-      {
-        return false;
-      }
-      if(!Directory.Exists(RESULT_PATH))
-      {
-        Directory.CreateDirectory(RESULT_PATH);
-      }
-      string filePath = ResultFilePath(fileName);
-      return Api.DownloadWav(synthesis_result_file_url, filePath);
+      return ResultFile.DownloadFrom(text_slug, synthesis_result_file_url);
     }
 
     public void SetImportFileLine(int value)

@@ -187,7 +187,7 @@ namespace Enginn
           } else {
             characterName = $"Unknown ID {characterSynthesis.character_id}";
           }
-          List<string> values = new List<string>(){
+          var values = new object[] {
             characterSynthesis.GetImportFileLine().ToString(),
             characterSynthesis.text_slug,
             characterName,
@@ -224,7 +224,7 @@ namespace Enginn
 
       // GUILayout.Space(20);
 
-      P($"Result files will be put in {CharacterSynthesis.AbsoluteResultPath()}");
+      P($"Result files will be put in {ResultFile.GetAbsolutePath()}");
       P("What should happen if the file already exists?", TextAnchor.MiddleLeft);
       replaceExistingFiles = 1 == GUILayout.SelectionGrid(
         replaceExistingFiles ? 1 : 0,

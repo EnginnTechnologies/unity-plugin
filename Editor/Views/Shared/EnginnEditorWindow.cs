@@ -177,12 +177,7 @@ namespace Enginn
     public void TableHeaderCell(string content, int width)
     {
       GUIStyle tableHeaderStyle = new GUIStyle();
-      if (width > 0)
-      {
-        tableHeaderStyle.fixedWidth = width;
-      } else {
-
-      }
+      tableHeaderStyle.fixedWidth = width;
       tableHeaderStyle.richText = true;
       tableHeaderStyle.fontSize = 12;
       tableHeaderStyle.fontStyle = FontStyle.Bold;
@@ -198,69 +193,63 @@ namespace Enginn
       EditorGUILayout.LabelField(
         content,
         tableHeaderStyle,
-        GUILayout.MinWidth(20)
+        GUILayout.Width(width)
       );
+    }
+
+    public void BeginTableRow()
+    {
+      EditorGUILayout.BeginHorizontal();
+    }
+    public void EndTableRow()
+    {
+      EditorGUILayout.EndHorizontal();
     }
 
     public void TableHeaderRow(List<string> contents, List<int> widths)
     {
-      EditorGUILayout.BeginHorizontal();
+      BeginTableRow();
       int idx = 0;
       foreach (string content in contents)
       {
         TableHeaderCell(content, widths[idx]);
         idx++;
       }
-      EditorGUILayout.EndHorizontal();
+      EndTableRow();
     }
 
-    public void TableBodyCell(string content, int width)
+    public void TableBodyCell(object content, int width)
     {
-      GUIStyle tableBodyStyle = new GUIStyle();
-      if (width > 0)
-      {
+      if (content is string) {
+        GUIStyle tableBodyStyle = new GUIStyle();
         tableBodyStyle.fixedWidth = width;
+        tableBodyStyle.richText = true;
+        tableBodyStyle.fontSize = 12;
+        tableBodyStyle.clipping = TextClipping.Clip;
+        tableBodyStyle.alignment = TextAnchor.MiddleLeft;
+        tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+        tableBodyStyle.normal.textColor = Color.white;
+
+        EditorGUILayout.LabelField(
+          (string)content,
+          tableBodyStyle,
+          GUILayout.Width(width)
+        );
       } else {
-
+        Debug.Log($"Unknown object type {content}");
       }
-      tableBodyStyle.richText = true;
-      tableBodyStyle.fontSize = 12;
-      tableBodyStyle.alignment = TextAnchor.MiddleLeft;
-      tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
-      tableBodyStyle.normal.textColor = Color.white;
-
-      EditorGUILayout.LabelField(
-        content,
-        tableBodyStyle,
-        GUILayout.MinWidth(20)
-      );
     }
 
-    public void TableBodyRow(List<string> contents, List<int> widths)
+    public void TableBodyRow(object[] contents, List<int> widths)
     {
-      EditorGUILayout.BeginHorizontal();
+      BeginTableRow();
       int idx = 0;
-      foreach (string content in contents)
+      foreach (object content in contents)
       {
         TableBodyCell(content, widths[idx]);
         idx++;
       }
-      EditorGUILayout.EndHorizontal();
-    }
-
-    public void Table(List<List<string>> data, List<int> widths)
-    {
-      int idx = 0;
-      foreach (List<string> line in data)
-      {
-        if (idx == 0)
-        {
-          TableHeaderRow(line, widths);
-        } else {
-          TableBodyRow(line, widths);
-        }
-        idx++;
-      }
+      EndTableRow();
     }
 
     protected string FilePathField(string currentPath, int width = 200)
@@ -390,10 +379,21 @@ namespace Enginn
       return audioPlayer;
     }
 
+    // with a URI
     protected async void PlayRemoteAudio(string url)
     {
+      Debug.Log($"play remote audio {url}");
       AudioSource audioPlayer = GetAudioPlayer();
-      audioPlayer.clip = await Api.DownloadAudioClip(url);
+      audioPlayer.clip = await Api.LoadAudioClip(url);
+      audioPlayer.Play();
+    }
+
+    // with an absolute path
+    protected async void PlayLocalAudio(string path)
+    {
+      Debug.Log($"play local audio {path}");
+      AudioSource audioPlayer = GetAudioPlayer();
+      audioPlayer.clip = await Api.LoadAudioClip("file://" + path);
       audioPlayer.Play();
     }
 

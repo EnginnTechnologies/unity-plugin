@@ -57,7 +57,7 @@ namespace Enginn
           character.updated_at = apiResponse.result.updated_at;
           break;
         case 422:
-          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
           character.SetErrors(apiResponse.GetErrorsDictionnary());
           break;
         default:
@@ -160,7 +160,7 @@ namespace Enginn
     }
 
     public static bool DownloadWav(string url, string path) {
-      // Debug.Log($"[Api] DownloadWav {url}");
+      // Debug.Log($"[Api] DownloadWav {url} at {path}");
       var client = new WebClient();
       byte[] data = client.DownloadData(url);
 
@@ -175,10 +175,10 @@ namespace Enginn
       return true;
     }
 
-    public static async Task<AudioClip> DownloadAudioClip(string url)
+    public static async Task<AudioClip> LoadAudioClip(string uri)
     {
       UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(
-        url,
+        uri,
         AudioType.WAV
       );
       www.SendWebRequest();

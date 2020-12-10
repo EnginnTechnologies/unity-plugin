@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+// using System.Drawing;
 using UnityEngine;
 using UnityEditor;
 
@@ -43,14 +44,14 @@ namespace Enginn
       };
       List<int> widths = new List<int>()
       {
-        0,
-        0,
-        0,
+        100,
+        100,
+        100,
         100,
         200,
-        50,
         100,
-        50
+        60,
+        100
       };
 
       TableHeaderRow(headers, widths);
@@ -61,23 +62,78 @@ namespace Enginn
       } else {
         foreach (Text text in texts)
         {
-          List<string> values = new List<string>(){
-            text.slug,
+          BeginTableRow();
+
+          TableBodyCell(text.slug, widths[0]);
+
+          GUIStyle cellStyle = new GUIStyle();
+          if (text.color_id > 0)
+          {
+            cellStyle.normal.background = MakeTexture(
+              widths[1],
+              1, // height
+              text.GetColor()
+            );
+            cellStyle.normal.textColor = text.GetTextColor();
+          } else {
+            cellStyle.normal.textColor = Color.white;
+          }
+          cellStyle.fixedWidth = widths[1];
+          cellStyle.richText = true;
+          cellStyle.fontSize = 12;
+          cellStyle.clipping = TextClipping.Clip;
+          cellStyle.alignment = TextAnchor.MiddleLeft;
+          cellStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+          EditorGUILayout.LabelField(
             text.color_name,
-            text.character_syntheses_count.ToString(),
-            text.main_character_name,
-            text.main_synthesis_text,
-            text.GetMainSynthesisModifierName(),
-            "",
-            ""
-          };
-          TableBodyRow(values, widths);
+            cellStyle,
+            GUILayout.Width(widths[1])
+          );
+
+          TableBodyCell(text.character_syntheses_count.ToString(), widths[2]);
+          TableBodyCell(text.main_character_name, widths[3]);
+          TableBodyCell(text.main_synthesis_text, widths[4]);
+          TableBodyCell(text.GetMainSynthesisModifierName(), widths[5]);
+
+          GUILayout.BeginVertical(GUILayout.Width(widths[6]));
+          BeginCenter();
+          if (text.ResultFileExists())
+          {
+            if (GUILayout.Button("▶", GUILayout.ExpandWidth(false)))
+            {
+              PlayMain(text);
+            }
+          } else {
+            if (GUILayout.Button("⇩", GUILayout.ExpandWidth(false)))
+            {
+              DownloadMain(text);
+            }
+          }
+          EndCenter();
+          EditorGUILayout.EndVertical();
+
+          GUILayout.BeginVertical(GUILayout.Width(widths[7]));
+
+          EditorGUILayout.EndVertical();
+
+          EndTableRow();
         }
       }
 
       EditorGUILayout.EndVertical();
 
       EndCenter();
+    }
+
+    private void PlayMain(Text text)
+    {
+      PlayLocalAudio(text.GetMainResultFileAbsolutePath());
+    }
+
+    private void DownloadMain(Text text)
+    {
+      text.DownloadMainResultFile();
+      AssetDatabase.Refresh();
     }
 
     protected override void OnGUIButtons()
