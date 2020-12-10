@@ -392,7 +392,7 @@ namespace Enginn
     // with a URI
     protected async void PlayRemoteAudio(string url)
     {
-      Debug.Log($"play remote audio {url}");
+      // Debug.Log($"play remote audio {url}");
       AudioSource audioPlayer = GetAudioPlayer();
       audioPlayer.clip = await Api.LoadAudioClip(url);
       audioPlayer.Play();
@@ -401,7 +401,7 @@ namespace Enginn
     // with an absolute path
     protected async void PlayLocalAudio(string path)
     {
-      Debug.Log($"play local audio {path}");
+      // Debug.Log($"play local audio {path}");
       AudioSource audioPlayer = GetAudioPlayer();
       audioPlayer.clip = await Api.LoadAudioClip("file://" + path);
       audioPlayer.Play();

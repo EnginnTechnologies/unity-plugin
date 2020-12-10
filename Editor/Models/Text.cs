@@ -28,6 +28,7 @@ namespace Enginn
     public string slug;
 
     public string created_at;
+    public string updated_at;
 
     public string GetMainSynthesisModifierName()
     {
@@ -54,16 +55,37 @@ namespace Enginn
       return color;
     }
 
-    public void SetColor(ProjectColor newColor)
+    public void SetColor(ProjectColor newColor, bool save = true)
     {
+      if (newColor == null || newColor.id == 0) {
+        if (color == null || color.id == 0) {
+          return;
+        }
+      } else {
+        if ((color != null) && (newColor.id == color.id)) {
+          return;
+        }
+      }
+
       color = newColor;
 
-      if (color == null)
+      if (color == null || color.id == 0)
       {
         color_id = 0;
       } else {
         color_id = color.id;
       }
+
+      if (save)
+      {
+        Update();
+      }
+    }
+
+    public bool Update()
+    {
+      Api.UpdateText(this);
+      return errors.Count < 1;
     }
 
   }

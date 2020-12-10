@@ -155,6 +155,29 @@ namespace Enginn
       return JsonUtility.FromJson<ApiResponse<Text[]>>(response).result;
     }
 
+    public static void UpdateText(Text text) {
+      var payload = "{\"text\": " + JsonUtility.ToJson(text) + "}";
+      var response = NewClient().UploadString(
+        $"{GetApiBaseUrl()}/texts/{text.id}",
+        WebRequestMethods.Http.Put,
+        payload
+      );
+      var apiResponse = JsonUtility.FromJson<ApiResponse<Text>>(response);
+
+      switch (apiResponse.status)
+      {
+        case 200:
+          text.updated_at = apiResponse.result.updated_at;
+          break;
+        case 422:
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
+          text.SetErrors(apiResponse.GetErrorsDictionnary());
+          break;
+        default:
+          throw new WebException($"API error {apiResponse.status}");
+      }
+    }
+
     //-------------------------------------------------------------------------
     // HELPERS
     //-------------------------------------------------------------------------

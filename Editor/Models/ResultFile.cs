@@ -57,7 +57,6 @@ namespace Enginn
 
     public static bool DownloadFrom(string slug, string uri)
     {
-      Debug.Log($"[ResultFile] DownloadFrom({slug}, {uri})");
       if (String.IsNullOrEmpty(uri))
       {
         return false;
