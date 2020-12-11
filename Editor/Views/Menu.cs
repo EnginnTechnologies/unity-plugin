@@ -48,7 +48,7 @@ namespace Enginn
     // TEXTS
     // ------------------------------------------------------------------------
 
-    [MenuItem("Enginn/Texts/List")]
+    [MenuItem("Enginn/Texts Manager")]
     static void ListTexts()
     {
       // Debug.Log("[Menu] ListTexts");

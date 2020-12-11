@@ -9,16 +9,27 @@ namespace Enginn
   public class Project : Model
   {
 
-    public int id;
+    // serialized attributes
 
+    public int id;
     public string name;
     public ProjectColor[] colors;
 
-    private string[] colorDisplayedOptions = null;
-    private int[] colorOptionValues = null;
+    // other attributes
 
-    private static Project current = null;
-    private static Project GetCurrent(bool refresh = false)
+    private Character[] characters;
+
+    private string[] colorDisplayedOptions;
+    private int[] colorOptionValues;
+
+    private string[] characterDisplayedOptions;
+    private int[] characterIdOptionValues;
+
+    private static Project current;
+
+    // methods
+
+    public static Project GetCurrent(bool refresh = false)
     {
       if (current == null || refresh)
       {
@@ -54,9 +65,12 @@ namespace Enginn
         string caret = " \u2304".ToString();
         List<string> options = new List<string>();
         options.Add("None" + caret);
-        foreach (ProjectColor color in colors)
+        if (colors != null)
         {
-          options.Add(color.GetNameOrHex() + caret);
+          foreach (ProjectColor color in colors)
+          {
+            options.Add(color.GetNameOrHex() + caret);
+          }
         }
         colorDisplayedOptions = options.ToArray();
       }
@@ -73,9 +87,12 @@ namespace Enginn
       {
         List<int> options = new List<int>();
         options.Add(0);
-        foreach (ProjectColor color in colors)
+        if (colors != null)
         {
-          options.Add(color.id);
+          foreach (ProjectColor color in colors)
+          {
+            options.Add(color.id);
+          }
         }
         colorOptionValues = options.ToArray();
       }
@@ -84,6 +101,70 @@ namespace Enginn
     public static int[] GetColorOptionValues()
     {
       return GetCurrent()._GetColorOptionValues();
+    }
+
+    private void _FetchCharacters()
+    {
+      characters = Api.GetCharacters();
+      characterDisplayedOptions = null;
+      characterIdOptionValues = null;
+    }
+    public static void FetchCharacters()
+    {
+      GetCurrent()._FetchCharacters();
+    }
+
+    public Character[] _GetCharacters()
+    {
+      return characters;
+    }
+    public static Character[] GetCharacters()
+    {
+      return GetCurrent()._GetCharacters();
+    }
+
+    private string[] _GetCharacterDisplayedOptions()
+    {
+      if(characterDisplayedOptions == null)
+      {
+        List<string> options = new List<string>();
+        options.Add("None");
+        if (characters != null)
+        {
+          foreach (Character character in characters)
+          {
+            options.Add(character.name);
+          }
+        }
+        characterDisplayedOptions = options.ToArray();
+      }
+      return characterDisplayedOptions;
+    }
+    public static string[] GetCharacterDisplayedOptions()
+    {
+      return GetCurrent()._GetCharacterDisplayedOptions();
+    }
+
+    private int[] _GetCharacterIdOptionValues()
+    {
+      if(characterIdOptionValues == null)
+      {
+        List<int> options = new List<int>();
+        options.Add(0);
+        if (characters != null)
+        {
+          foreach (Character character in characters)
+          {
+            options.Add(character.id);
+          }
+        }
+        characterIdOptionValues = options.ToArray();
+      }
+      return characterIdOptionValues;
+    }
+    public static int[] GetCharacterIdOptionValues()
+    {
+      return GetCurrent()._GetCharacterIdOptionValues();
     }
 
   }

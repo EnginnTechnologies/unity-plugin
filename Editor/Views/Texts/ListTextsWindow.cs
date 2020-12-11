@@ -9,6 +9,7 @@ namespace Enginn
   public class ListTextsWindow : ScrollableEditorWindow
   {
     Text[] texts = {};
+    int filterCharacterId = 0;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -26,6 +27,15 @@ namespace Enginn
 
     protected override void OnGUIContent()
     {
+
+      BeginCenter();
+
+      FormLabel("Filter by character:", 150);
+      filterCharacterId = FormCharacterIdField(filterCharacterId, 200);
+
+      EndCenter();
+
+      GUILayout.Space(30);
 
       BeginCenter();
 
@@ -62,6 +72,11 @@ namespace Enginn
       } else {
         foreach (Text text in texts)
         {
+          if (filterCharacterId > 0 && text.main_character_id != filterCharacterId)
+          {
+            continue;
+          }
+
           BeginTableRow();
 
           TableBodyCell(text.slug, widths[0]);
@@ -136,6 +151,7 @@ namespace Enginn
     public void FetchTexts()
     {
       Project.RefreshCurrent();
+      Project.FetchCharacters();
       texts = Api.GetTexts();
     }
   }

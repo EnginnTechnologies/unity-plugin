@@ -193,6 +193,16 @@ namespace Enginn
       );
     }
 
+    public int FormCharacterIdField(int selected, int width = 400)
+    {
+      return EditorGUILayout.IntPopup(
+        selected,
+        Project.GetCharacterDisplayedOptions(),
+        Project.GetCharacterIdOptionValues(),
+        GUILayout.Width(width)
+      );
+    }
+
     public string FormTextField(string text, int width = 400)
     {
       return EditorGUILayout.TextField(
