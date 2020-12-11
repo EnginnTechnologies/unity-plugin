@@ -31,7 +31,7 @@ namespace Enginn
       if(characterBoxStyle == null)
       {
         characterBoxStyle = new GUIStyle();
-        characterBoxStyle.normal.background = MakeTexture(
+        characterBoxStyle.normal.background = Colors.MakeTexture(
           characterBoxWidth,
           1, // height
           new Color(1.0f, 1.0f, 1.0f, 0.1f)

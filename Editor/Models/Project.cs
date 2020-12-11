@@ -14,7 +14,8 @@ namespace Enginn
     public string name;
     public ProjectColor[] colors;
 
-    private string[] colorOptions = null;
+    private string[] colorDisplayedOptions = null;
+    private int[] colorOptionValues = null;
 
     private static Project current = null;
     private static Project GetCurrent(bool refresh = false)
@@ -46,58 +47,43 @@ namespace Enginn
       return GetCurrent()._GetColorById(id);
     }
 
-    private ProjectColor _GetColorFromOptionsIndex(int idx)
+    private string[] _GetColorDisplayedOptions()
     {
-      if (idx < 1 || idx > colors.Length) {
-        return null;
-      } else {
-        return colors[idx - 1];
-      }
-    }
-    public static ProjectColor GetColorFromOptionsIndex(int idx)
-    {
-      return GetCurrent()._GetColorFromOptionsIndex(idx);
-    }
-
-    private int _GetColorOptionsIndex(ProjectColor c)
-    {
-      if (c == null)
+      if(colorDisplayedOptions == null)
       {
-        return 0;
-      }
-      int idx = 0;
-      foreach (ProjectColor color in colors)
-      {
-        idx++;
-        if(color.id == c.id)
-        {
-          return idx;
-        }
-      }
-      return 0;
-    }
-    public static int GetColorOptionsIndex(ProjectColor c)
-    {
-      return GetCurrent()._GetColorOptionsIndex(c);
-    }
-
-    private string[] _GetColorOptions()
-    {
-      if(colorOptions == null)
-      {
+        string caret = " \u2304".ToString();
         List<string> options = new List<string>();
-        options.Add("None");
+        options.Add("None" + caret);
         foreach (ProjectColor color in colors)
         {
-          options.Add($"#{color.id}: {color.name}");
+          options.Add(color.GetNameOrHex() + caret);
         }
-        colorOptions = options.ToArray();
+        colorDisplayedOptions = options.ToArray();
       }
-      return colorOptions;
+      return colorDisplayedOptions;
     }
-    public static string[] GetColorOptions()
+    public static string[] GetColorDisplayedOptions()
     {
-      return GetCurrent()._GetColorOptions();
+      return GetCurrent()._GetColorDisplayedOptions();
+    }
+
+    private int[] _GetColorOptionValues()
+    {
+      if(colorOptionValues == null)
+      {
+        List<int> options = new List<int>();
+        options.Add(0);
+        foreach (ProjectColor color in colors)
+        {
+          options.Add(color.id);
+        }
+        colorOptionValues = options.ToArray();
+      }
+      return colorOptionValues;
+    }
+    public static int[] GetColorOptionValues()
+    {
+      return GetCurrent()._GetColorOptionValues();
     }
 
   }

@@ -19,6 +19,21 @@ namespace Enginn
       return new Color(r / 255f, g / 255f, b / 255f, a);
     }
 
+    public string GetHex()
+    {
+      return "#" + r.ToString("X2") + g.ToString("X2") + b.ToString("X2");
+    }
+
+    public string GetNameOrHex()
+    {
+      if (String.IsNullOrEmpty(name))
+      {
+        return GetHex();
+      } else {
+        return name;
+      }
+    }
+
     public Color GetTextColor()
     {
       Color color = GetColor();
@@ -29,6 +44,7 @@ namespace Enginn
         return Color.black;
       }
     }
+
   }
 
 }

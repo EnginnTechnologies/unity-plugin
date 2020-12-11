@@ -160,10 +160,35 @@ namespace Enginn
 
     public ProjectColor FormColorField(ProjectColor selected, int width = 400)
     {
-      return Project.GetColorFromOptionsIndex(
-        EditorGUILayout.Popup(
-          Project.GetColorOptionsIndex(selected),
-          Project.GetColorOptions()
+      GUIStyle style;
+      if (selected == null || selected.id == 0)
+      {
+        style = new GUIStyle(EditorStyles.label);
+      } else {
+        style = new GUIStyle();
+      }
+      style.clipping = TextClipping.Clip;
+      style.alignment = TextAnchor.MiddleLeft;
+      style.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      if (selected == null || selected.id == 0)
+      {
+        style.normal.textColor = Color.white;
+        style.focused.textColor = Color.white;
+      } else {
+        style.normal.background = Colors.MakeTexture(
+          width,
+          1, // height
+          selected.GetColor()
+        );
+        style.normal.textColor = selected.GetTextColor();
+      }
+      return Project.GetColorById(
+        EditorGUILayout.IntPopup(
+          (selected == null || selected.id == 0) ? 0 : selected.id,
+          Project.GetColorDisplayedOptions(),
+          Project.GetColorOptionValues(),
+          style,
+          GUILayout.Width(width)
         )
       );
     }
@@ -194,7 +219,7 @@ namespace Enginn
       tableHeaderStyle.alignment = TextAnchor.MiddleLeft;
       tableHeaderStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
       tableHeaderStyle.normal.textColor = Color.white;
-      tableHeaderStyle.normal.background = MakeTexture(
+      tableHeaderStyle.normal.background = Colors.MakeTexture(
         width,
         1, // height
         new Color(1.0f, 1.0f, 1.0f, 0.1f)
@@ -353,20 +378,6 @@ namespace Enginn
       }
 
       EditorGUILayout.EndVertical();
-    }
-
-    protected static Texture2D MakeTexture(int width, int height, Color col)
-    {
-      Color[] pix = new Color[width*height];
-
-      for(int i = 0; i < pix.Length; i++)
-        pix[i] = col;
-
-      Texture2D result = new Texture2D(width, height);
-      result.SetPixels(pix);
-      result.Apply();
-
-      return result;
     }
 
     //-------------------------------------------------------------------------

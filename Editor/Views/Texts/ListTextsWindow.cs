@@ -66,29 +66,7 @@ namespace Enginn
 
           TableBodyCell(text.slug, widths[0]);
 
-          if (text.color != null)
-          {
-            GUIStyle cellStyle = new GUIStyle();
-            cellStyle.normal.background = MakeTexture(
-              widths[1],
-              1, // height
-              text.GetColor().GetColor()
-            );
-            cellStyle.normal.textColor = text.GetColor().GetTextColor();
-            cellStyle.fixedWidth = widths[1];
-            cellStyle.richText = true;
-            cellStyle.fontSize = 12;
-            cellStyle.clipping = TextClipping.Clip;
-            cellStyle.alignment = TextAnchor.MiddleLeft;
-            cellStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
-            EditorGUILayout.LabelField(
-              text.GetColor().name,
-              cellStyle,
-              GUILayout.Width(widths[1]/2)
-            );
-          }
-
-          text.SetColor(FormColorField(text.GetColor(), widths[1]/2));
+          text.SetColor(FormColorField(text.GetColor(), widths[1]));
 
           TableBodyCell(text.character_syntheses_count.ToString(), widths[2]);
           TableBodyCell(text.main_character_name, widths[3]);
