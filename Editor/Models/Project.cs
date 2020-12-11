@@ -17,13 +17,17 @@ namespace Enginn
     private string[] colorOptions = null;
 
     private static Project current = null;
-    private static Project GetCurrent()
+    private static Project GetCurrent(bool refresh = false)
     {
-      if (current == null)
+      if (current == null || refresh)
       {
         current = Api.GetProject();
       }
       return current;
+    }
+    public static void RefreshCurrent()
+    {
+      GetCurrent(true);
     }
 
     private ProjectColor _GetColorById(int id)

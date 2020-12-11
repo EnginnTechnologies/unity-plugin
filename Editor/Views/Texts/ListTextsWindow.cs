@@ -157,6 +157,7 @@ namespace Enginn
 
     public void FetchTexts()
     {
+      Project.RefreshCurrent();
       texts = Api.GetTexts();
     }
   }
