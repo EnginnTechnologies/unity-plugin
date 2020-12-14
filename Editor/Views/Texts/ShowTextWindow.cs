@@ -287,6 +287,7 @@ namespace Enginn
       if (text.SetMainCharacterSynthesisId(characterSynthesis.id))
       {
         FetchData();
+        DownloadMain();
       }
     }
 
