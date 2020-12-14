@@ -158,6 +158,62 @@ namespace Enginn
       );
     }
 
+    public ProjectColor FormColorField(ProjectColor selected, int width = 400)
+    {
+      GUIStyle style;
+      if (selected == null || selected.id == 0)
+      {
+        style = new GUIStyle(EditorStyles.label);
+      } else {
+        style = new GUIStyle();
+      }
+      style.clipping = TextClipping.Clip;
+      style.alignment = TextAnchor.MiddleLeft;
+      style.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+      if (selected == null || selected.id == 0)
+      {
+        style.normal.textColor = Color.white;
+        style.focused.textColor = Color.white;
+      } else {
+        style.normal.background = Colors.MakeTexture(
+          width,
+          1, // height
+          selected.GetColor()
+        );
+        style.normal.textColor = selected.GetTextColor();
+      }
+      return Project.GetColorById(
+        EditorGUILayout.IntPopup(
+          (selected == null || selected.id == 0) ? 0 : selected.id,
+          Project.GetColorDisplayedOptions(),
+          Project.GetColorOptionValues(),
+          style,
+          GUILayout.Width(width)
+        )
+      );
+    }
+
+    public int FormCharacterIdField(int selected, int width = 400)
+    {
+      return EditorGUILayout.IntPopup(
+        selected,
+        Project.GetCharacterDisplayedOptions(),
+        Project.GetCharacterIdOptionValues(),
+        GUILayout.Width(width)
+      );
+    }
+
+    public string FormModifierField(string selected, int width = 400)
+    {
+      return Synthesis.Modifiers[
+        FormRadio(
+          Synthesis.GetModifierIndex(selected),
+          Synthesis.ModifierNames,
+          width
+        )
+      ];
+    }
+
     public string FormTextField(string text, int width = 400)
     {
       return EditorGUILayout.TextField(
@@ -184,7 +240,7 @@ namespace Enginn
       tableHeaderStyle.alignment = TextAnchor.MiddleLeft;
       tableHeaderStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
       tableHeaderStyle.normal.textColor = Color.white;
-      tableHeaderStyle.normal.background = MakeTexture(
+      tableHeaderStyle.normal.background = Colors.MakeTexture(
         width,
         1, // height
         new Color(1.0f, 1.0f, 1.0f, 0.1f)
@@ -197,60 +253,59 @@ namespace Enginn
       );
     }
 
-    public void TableHeaderRow(List<string> contents, List<int> widths)
+    public void BeginTableRow()
     {
       EditorGUILayout.BeginHorizontal();
+    }
+    public void EndTableRow()
+    {
+      EditorGUILayout.EndHorizontal();
+    }
+
+    public void TableHeaderRow(List<string> contents, List<int> widths)
+    {
+      BeginTableRow();
       int idx = 0;
       foreach (string content in contents)
       {
         TableHeaderCell(content, widths[idx]);
         idx++;
       }
-      EditorGUILayout.EndHorizontal();
+      EndTableRow();
     }
 
-    public void TableBodyCell(string content, int width)
+    public void TableBodyCell(object content, int width)
     {
-      GUIStyle tableBodyStyle = new GUIStyle();
-      tableBodyStyle.fixedWidth = width;
-      tableBodyStyle.richText = true;
-      tableBodyStyle.fontSize = 12;
-      tableBodyStyle.alignment = TextAnchor.MiddleLeft;
-      tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
-      tableBodyStyle.normal.textColor = Color.white;
+      if (content is string) {
+        GUIStyle tableBodyStyle = new GUIStyle();
+        tableBodyStyle.fixedWidth = width;
+        tableBodyStyle.richText = true;
+        tableBodyStyle.fontSize = 12;
+        tableBodyStyle.clipping = TextClipping.Clip;
+        tableBodyStyle.alignment = TextAnchor.MiddleLeft;
+        tableBodyStyle.padding = new RectOffset(10, 10, 2, 2); // left, right, top, bottom
+        tableBodyStyle.normal.textColor = Color.white;
 
-      EditorGUILayout.LabelField(
-        content,
-        tableBodyStyle,
-        GUILayout.Width(width)
-      );
+        EditorGUILayout.LabelField(
+          (string)content,
+          tableBodyStyle,
+          GUILayout.Width(width)
+        );
+      } else {
+        Debug.Log($"Unknown object type {content}");
+      }
     }
 
-    public void TableBodyRow(List<string> contents, List<int> widths)
+    public void TableBodyRow(object[] contents, List<int> widths)
     {
-      EditorGUILayout.BeginHorizontal();
+      BeginTableRow();
       int idx = 0;
-      foreach (string content in contents)
+      foreach (object content in contents)
       {
         TableBodyCell(content, widths[idx]);
         idx++;
       }
-      EditorGUILayout.EndHorizontal();
-    }
-
-    public void Table(List<List<string>> data, List<int> widths)
-    {
-      int idx = 0;
-      foreach (List<string> line in data)
-      {
-        if (idx == 0)
-        {
-          TableHeaderRow(line, widths);
-        } else {
-          TableBodyRow(line, widths);
-        }
-        idx++;
-      }
+      EndTableRow();
     }
 
     protected string FilePathField(string currentPath, int width = 200)
@@ -346,18 +401,9 @@ namespace Enginn
       EditorGUILayout.EndVertical();
     }
 
-    protected static Texture2D MakeTexture(int width, int height, Color col)
+    public string FormatDate(string dt, string format = "g")
     {
-      Color[] pix = new Color[width*height];
-
-      for(int i = 0; i < pix.Length; i++)
-        pix[i] = col;
-
-      Texture2D result = new Texture2D(width, height);
-      result.SetPixels(pix);
-      result.Apply();
-
-      return result;
+      return String.IsNullOrEmpty(dt) ? "" : DateTime.Parse(dt).ToString(format);
     }
 
     //-------------------------------------------------------------------------
@@ -380,10 +426,21 @@ namespace Enginn
       return audioPlayer;
     }
 
+    // with a URI
     protected async void PlayRemoteAudio(string url)
     {
+      // Debug.Log($"play remote audio {url}");
       AudioSource audioPlayer = GetAudioPlayer();
-      audioPlayer.clip = await Api.DownloadAudioClip(url);
+      audioPlayer.clip = await Api.LoadAudioClip(url);
+      audioPlayer.Play();
+    }
+
+    // with an absolute path
+    protected async void PlayLocalAudio(string path)
+    {
+      // Debug.Log($"play local audio {path}");
+      AudioSource audioPlayer = GetAudioPlayer();
+      audioPlayer.clip = await Api.LoadAudioClip("file://" + path);
       audioPlayer.Play();
     }
 

@@ -12,13 +12,18 @@ namespace Enginn
     public const string RESULT_PATH = "Assets/EnginnResults";
 
     public int id;
-    public string modifier = Synthesis.Modifier.None;
+    public bool is_main;
+
+    public int text_id;
     public string text_slug;
-    public string text;
-    public string created_at;
+
     public int character_id;
+    public string character_name;
+
     public int synthesis_id;
+    public string synthesis_modifier = Synthesis.Modifier.None;
     public string synthesis_result_file_url;
+    public string synthesis_text;
 
     private int importFileLine;
 
@@ -28,44 +33,14 @@ namespace Enginn
       return id > 0;
     }
 
-    public static string AbsoluteResultPath()
+    public bool ResultFileExists()
     {
-      string assetsPath = Application.dataPath;
-      string rootPath = assetsPath.Substring(0, assetsPath.Length - "Assets".Length);
-      return rootPath + RESULT_PATH;
+      return ResultFile.Exists(text_slug);
     }
 
-    public string ResultFilePath(string fileName = null)
+    public bool DownloadResultFile()
     {
-      if (String.IsNullOrEmpty(fileName))
-      {
-        if (String.IsNullOrEmpty(text_slug))
-        {
-          throw new System.ArgumentException("Neither fileName nor slug provided", "fileName");
-        }
-        return $"{RESULT_PATH}/{text_slug}.wav";
-      }
-      return $"{RESULT_PATH}/{fileName}.wav";
-    }
-
-
-    public bool ResultFileExists(string fileName = null)
-    {
-      return File.Exists(ResultFilePath(fileName));
-    }
-
-    public bool DownloadResultFile(string fileName = null)
-    {
-      if (String.IsNullOrEmpty(synthesis_result_file_url))
-      {
-        return false;
-      }
-      if(!Directory.Exists(RESULT_PATH))
-      {
-        Directory.CreateDirectory(RESULT_PATH);
-      }
-      string filePath = ResultFilePath(fileName);
-      return Api.DownloadWav(synthesis_result_file_url, filePath);
+      return ResultFile.DownloadFrom(text_slug, synthesis_result_file_url);
     }
 
     public void SetImportFileLine(int value)
@@ -77,18 +52,19 @@ namespace Enginn
       return importFileLine;
     }
 
-    public string GetModifierName()
+    public string GetSynthesisModifierName()
     {
-      int idx = -1;
-      foreach (string synthesisModifier in Synthesis.Modifiers)
-      {
-        idx++;
-        if(modifier == synthesisModifier)
-        {
-          return Synthesis.ModifierNames[idx];
-        }
-      }
-      return "None";
+      return Synthesis.GetModifierName(synthesis_modifier);
+    }
+
+    public bool MainResultFileExists()
+    {
+      return ResultFile.Exists(text_slug);
+    }
+
+    public string GetResultFileAbsolutePath()
+    {
+      return ResultFile.GetAbsolutePath(text_slug);
     }
 
   }

@@ -1,4 +1,4 @@
-﻿// using System;
+﻿using System;
 using System.Collections.Generic;
 // using System.IO;
 // using System.Net;
@@ -9,6 +9,9 @@ namespace Enginn
 
   public class Model
   {
+
+    public string created_at;
+    public string updated_at;
 
     protected Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 

@@ -187,12 +187,12 @@ namespace Enginn
           } else {
             characterName = $"Unknown ID {characterSynthesis.character_id}";
           }
-          List<string> values = new List<string>(){
+          var values = new object[] {
             characterSynthesis.GetImportFileLine().ToString(),
             characterSynthesis.text_slug,
             characterName,
-            characterSynthesis.text,
-            characterSynthesis.GetModifierName()
+            characterSynthesis.synthesis_text,
+            characterSynthesis.GetSynthesisModifierName()
           };
           TableBodyRow(values, widths);
         }
@@ -224,7 +224,7 @@ namespace Enginn
 
       // GUILayout.Space(20);
 
-      P($"Result files will be put in {CharacterSynthesis.AbsoluteResultPath()}");
+      P($"Result files will be put in {ResultFile.GetAbsolutePath()}");
       P("What should happen if the file already exists?", TextAnchor.MiddleLeft);
       replaceExistingFiles = 1 == GUILayout.SelectionGrid(
         replaceExistingFiles ? 1 : 0,
@@ -505,8 +505,8 @@ namespace Enginn
         }
 
         CharacterSynthesis characterSynthesis = new CharacterSynthesis();
-        characterSynthesis.text = line["text"];
-        characterSynthesis.modifier = line["modifier"];
+        characterSynthesis.synthesis_text = line["text"];
+        characterSynthesis.synthesis_modifier = line["modifier"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
         characterSynthesis.text_slug = line["slug"];
         characterSynthesis.SetImportFileLine(line_idx);

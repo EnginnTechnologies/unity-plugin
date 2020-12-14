@@ -14,6 +14,15 @@ namespace Enginn
   {
 
     //-------------------------------------------------------------------------
+    // PROJECT
+    //-------------------------------------------------------------------------
+
+    public static Project GetProject() {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/project");
+      return JsonUtility.FromJson<ApiResponse<Project>>(response).result;
+    }
+
+    //-------------------------------------------------------------------------
     // CHARACTERS
     //-------------------------------------------------------------------------
 
@@ -57,7 +66,7 @@ namespace Enginn
           character.updated_at = apiResponse.result.updated_at;
           break;
         case 422:
-          Debug.Log($"API errors: {apiResponse.GetErrorsAsJson()}");
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
           character.SetErrors(apiResponse.GetErrorsDictionnary());
           break;
         default:
@@ -90,6 +99,17 @@ namespace Enginn
     // CHARACTER SYNTHESES
     //-------------------------------------------------------------------------
 
+    public static CharacterSynthesis[] GetCharacterSyntheses(Text filterText = null, int limit = 100)
+    {
+      var uri = $"{GetApiBaseUrl()}/character_syntheses?per={limit}";
+      if (filterText != null)
+      {
+        uri = $"{uri}&by_text_id={filterText.id}";
+      }
+      var response = NewClient().DownloadString(uri);
+      return JsonUtility.FromJson<ApiResponse<CharacterSynthesis[]>>(response).result;
+    }
+
     public static void CreateCharacterSynthesis(CharacterSynthesis characterSynthesis) {
       var payload = "{\"character_synthesis\": " + JsonUtility.ToJson(characterSynthesis) + "}";
       var response = NewClient().UploadString($"{GetApiBaseUrl()}/character_syntheses", payload);
@@ -100,6 +120,7 @@ namespace Enginn
         case 201:
           characterSynthesis.id = apiResponse.result.id;
           characterSynthesis.created_at = apiResponse.result.created_at;
+          characterSynthesis.text_id = apiResponse.result.text_id;
           characterSynthesis.synthesis_id = apiResponse.result.synthesis_id;
           characterSynthesis.synthesis_result_file_url = apiResponse.result.synthesis_result_file_url;
           break;
@@ -138,6 +159,44 @@ namespace Enginn
     }
 
     //-------------------------------------------------------------------------
+    // TEXTS
+    //-------------------------------------------------------------------------
+
+    public static Text[] GetTexts() {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/texts");
+      return JsonUtility.FromJson<ApiResponse<Text[]>>(response).result;
+    }
+
+    public static Text GetText(int text_id)
+    {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/texts/{text_id}");
+      return JsonUtility.FromJson<ApiResponse<Text>>(response).result;
+    }
+
+    public static void UpdateText(Text text) {
+      var payload = "{\"text\": " + JsonUtility.ToJson(text) + "}";
+      var response = NewClient().UploadString(
+        $"{GetApiBaseUrl()}/texts/{text.id}",
+        WebRequestMethods.Http.Put,
+        payload
+      );
+      var apiResponse = JsonUtility.FromJson<ApiResponse<Text>>(response);
+
+      switch (apiResponse.status)
+      {
+        case 200:
+          text.updated_at = apiResponse.result.updated_at;
+          break;
+        case 422:
+          Debug.LogError($"API errors: {apiResponse.GetErrorsAsJson()}");
+          text.SetErrors(apiResponse.GetErrorsDictionnary());
+          break;
+        default:
+          throw new WebException($"API error {apiResponse.status}");
+      }
+    }
+
+    //-------------------------------------------------------------------------
     // HELPERS
     //-------------------------------------------------------------------------
 
@@ -151,7 +210,7 @@ namespace Enginn
     }
 
     public static bool DownloadWav(string url, string path) {
-      // Debug.Log($"[Api] DownloadWav {url}");
+      // Debug.Log($"[Api] DownloadWav {url} at {path}");
       var client = new WebClient();
       byte[] data = client.DownloadData(url);
 
@@ -166,10 +225,10 @@ namespace Enginn
       return true;
     }
 
-    public static async Task<AudioClip> DownloadAudioClip(string url)
+    public static async Task<AudioClip> LoadAudioClip(string uri)
     {
       UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(
-        url,
+        uri,
         AudioType.WAV
       );
       www.SendWebRequest();

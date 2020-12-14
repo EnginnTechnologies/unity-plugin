@@ -10,12 +10,7 @@ namespace Enginn
   public class NewCharacterSynthesisWindow : ScrollableEditorWindow
   {
 
-    private Character[] characters;
-    private string[] characterNames;
-    private int characterIndex = -1;
-
     private CharacterSynthesis characterSynthesis = new CharacterSynthesis();
-    private int modifierIndex = 0;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -40,25 +35,37 @@ namespace Enginn
       // SLUG
       BeginCenteredFormField();
       FormLabel("Slug");
-      characterSynthesis.text_slug = FormTextField(characterSynthesis.text_slug);
+      characterSynthesis.text_slug = FormTextField(
+        characterSynthesis.text_slug,
+        400
+      );
       EndCenter();
 
       // CHARACTER
       BeginCenteredFormField();
       FormLabel("Character");
-      SetCharacterIndex(FormRadio(characterIndex, characterNames));
+      characterSynthesis.character_id = FormCharacterIdField(
+        characterSynthesis.character_id,
+        400
+      );
       EndCenter();
 
       // TEXT
       BeginCenteredFormField();
       FormLabel("Text");
-      characterSynthesis.text = FormTextField(characterSynthesis.text);
+      characterSynthesis.synthesis_text = FormTextField(
+        characterSynthesis.synthesis_text,
+        400
+      );
       EndCenter();
 
       // MODIFIER
       BeginCenteredFormField();
       FormLabel("Modifier");
-      SetModifierIndex(FormRadio(modifierIndex, Synthesis.ModifierNames));
+      characterSynthesis.synthesis_modifier = FormModifierField(
+        characterSynthesis.synthesis_modifier,
+        400
+      );
       EndCenter();
 
       // ERRORS
@@ -92,10 +99,15 @@ namespace Enginn
     // METHODS
     // ------------------------------------------------------------------------
 
-    public void FetchCharacters()
+    public void FetchData()
     {
-      characters = Api.GetCharacters();
-      characterNames = characters.Select(c => c.name).ToArray();
+      Project.RefreshCurrent();
+      Project.FetchCharacters();
+    }
+
+    public void SetCharacterSynthesis(CharacterSynthesis newCharacterSynthesis)
+    {
+      characterSynthesis = newCharacterSynthesis;
     }
 
     private bool TestCanCreate()
@@ -106,7 +118,7 @@ namespace Enginn
         ) && (
           !String.IsNullOrEmpty(characterSynthesis.text_slug)
         ) && (
-          !String.IsNullOrEmpty(characterSynthesis.text)
+          !String.IsNullOrEmpty(characterSynthesis.synthesis_text)
         )
       );
     }
@@ -118,6 +130,7 @@ namespace Enginn
         if(characterSynthesis.DownloadResultFile())
         {
           AssetDatabase.Refresh();
+          Router.ShowText(characterSynthesis.text_id);
           Close();
         } else {
           Debug.LogError("result file couldn't be downloaded");
@@ -127,22 +140,6 @@ namespace Enginn
       }
     }
 
-    private void SetCharacterIndex(int newCharacterIndex)
-    {
-      characterIndex = newCharacterIndex;
-      if(newCharacterIndex >= 0)
-      {
-        characterSynthesis.character_id = characters[characterIndex].id;
-      } else {
-        characterSynthesis.character_id = 0;
-      }
-    }
-
-    private void SetModifierIndex(int newModifierIndex)
-    {
-      modifierIndex = newModifierIndex;
-      characterSynthesis.modifier = Synthesis.Modifiers[modifierIndex];
-    }
   }
 
 }
