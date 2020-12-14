@@ -38,7 +38,9 @@ namespace Enginn
 
       BeginCenter();
 
-      EditorGUILayout.BeginVertical();
+      GUIStyle style = new GUIStyle();
+      style.padding = new RectOffset(10, 10, 10, 10); // left, right, top, bottom
+      EditorGUILayout.BeginVertical(style);
 
       List<string> headers = new List<string>()
       {
@@ -60,7 +62,7 @@ namespace Enginn
         200,
         100,
         60,
-        100
+        150
       };
 
       TableHeaderRow(headers, widths);
@@ -82,7 +84,16 @@ namespace Enginn
 
           text.SetColor(FormColorField(text.GetColor(), widths[1]));
 
-          TableBodyCell(text.character_syntheses_count.ToString(), widths[2]);
+          EditorGUILayout.BeginVertical(GUILayout.Width(widths[2]));
+          GUILayout.BeginHorizontal();
+          TableBodyCell(text.character_syntheses_count.ToString(), 40);
+          if (GUILayout.Button("View", GUILayout.ExpandWidth(false)))
+          {
+            ViewHistory(text);
+          }
+          GUILayout.EndHorizontal();
+          EditorGUILayout.EndVertical();
+
           TableBodyCell(text.main_character_name, widths[3]);
           TableBodyCell(text.main_synthesis_text, widths[4]);
           TableBodyCell(text.GetMainSynthesisModifierName(), widths[5]);
@@ -111,9 +122,9 @@ namespace Enginn
             Resynthesize(text);
           }
           GUILayout.Space(10);
-          if (GUILayout.Button("History", GUILayout.ExpandWidth(false)))
+          if (GUILayout.Button("View", GUILayout.ExpandWidth(false)))
           {
-            ViewHistory(text);
+            // TODO
           }
           EndCenter();
           EditorGUILayout.EndVertical();
