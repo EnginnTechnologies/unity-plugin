@@ -30,6 +30,20 @@ namespace Enginn
       return "None";
     }
 
+    public static int GetModifierIndex(string modifier)
+    {
+      int idx = -1;
+      foreach (string synthesisModifier in Modifiers)
+      {
+        idx++;
+        if(modifier == synthesisModifier)
+        {
+          return idx;
+        }
+      }
+      return 0;
+    }
+
   }
 
 }

@@ -10,12 +10,7 @@ namespace Enginn
   public class NewCharacterSynthesisWindow : ScrollableEditorWindow
   {
 
-    private Character[] characters;
-    private string[] characterNames;
-    private int characterIndex = -1;
-
     private CharacterSynthesis characterSynthesis = new CharacterSynthesis();
-    private int modifierIndex = 0;
 
     // ------------------------------------------------------------------------
     // GUI
@@ -46,7 +41,10 @@ namespace Enginn
       // CHARACTER
       BeginCenteredFormField();
       FormLabel("Character");
-      SetCharacterIndex(FormRadio(characterIndex, characterNames));
+      characterSynthesis.character_id = FormCharacterIdField(
+        characterSynthesis.character_id,
+        200
+      );
       EndCenter();
 
       // TEXT
@@ -58,7 +56,10 @@ namespace Enginn
       // MODIFIER
       BeginCenteredFormField();
       FormLabel("Modifier");
-      SetModifierIndex(FormRadio(modifierIndex, Synthesis.ModifierNames));
+      characterSynthesis.modifier = FormModifierField(
+        characterSynthesis.modifier,
+        200
+      );
       EndCenter();
 
       // ERRORS
@@ -92,10 +93,15 @@ namespace Enginn
     // METHODS
     // ------------------------------------------------------------------------
 
-    public void FetchCharacters()
+    public void FetchData()
     {
-      characters = Api.GetCharacters();
-      characterNames = characters.Select(c => c.name).ToArray();
+      Project.RefreshCurrent();
+      Project.FetchCharacters();
+    }
+
+    public void SetCharacterSynthesis(CharacterSynthesis newCharacterSynthesis)
+    {
+      characterSynthesis = newCharacterSynthesis;
     }
 
     private bool TestCanCreate()
@@ -127,22 +133,6 @@ namespace Enginn
       }
     }
 
-    private void SetCharacterIndex(int newCharacterIndex)
-    {
-      characterIndex = newCharacterIndex;
-      if(newCharacterIndex >= 0)
-      {
-        characterSynthesis.character_id = characters[characterIndex].id;
-      } else {
-        characterSynthesis.character_id = 0;
-      }
-    }
-
-    private void SetModifierIndex(int newModifierIndex)
-    {
-      modifierIndex = newModifierIndex;
-      characterSynthesis.modifier = Synthesis.Modifiers[modifierIndex];
-    }
   }
 
 }

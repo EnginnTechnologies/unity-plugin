@@ -203,6 +203,17 @@ namespace Enginn
       );
     }
 
+    public string FormModifierField(string selected, int width = 400)
+    {
+      return Synthesis.Modifiers[
+        FormRadio(
+          Synthesis.GetModifierIndex(selected),
+          Synthesis.ModifierNames,
+          width
+        )
+      ];
+    }
+
     public string FormTextField(string text, int width = 400)
     {
       return EditorGUILayout.TextField(

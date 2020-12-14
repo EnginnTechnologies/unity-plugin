@@ -9,9 +9,6 @@ namespace Enginn
 
     public static void ListCharacters()
     {
-      // Debug.Log("[Router] ListCharacters");
-
-      // Get existing open window or if none, make a new one
       ListCharactersWindow window = (ListCharactersWindow)EditorWindow.GetWindow(
         typeof(ListCharactersWindow)
       );
@@ -21,9 +18,6 @@ namespace Enginn
 
     public static void NewCharacter()
     {
-      // Debug.Log("[Router] NewCharacter");
-
-      // Get existing open window or if none, make a new one
       NewCharacterWindow window = (NewCharacterWindow)EditorWindow.GetWindow(
         typeof(NewCharacterWindow)
       );
@@ -32,8 +26,6 @@ namespace Enginn
 
     public static void EditCharacter(Character character)
     {
-
-      // Get existing open window or if none, make a new one
       EditCharacterWindow window = (EditCharacterWindow)EditorWindow.GetWindow(
         typeof(EditCharacterWindow)
       );
@@ -44,8 +36,6 @@ namespace Enginn
 
     public static void DestroyCharacter(Character character)
     {
-
-      // Get existing open window or if none, make a new one
       DestroyCharacterWindow window = (DestroyCharacterWindow)EditorWindow.GetWindow(
         typeof(DestroyCharacterWindow)
       );
@@ -55,29 +45,27 @@ namespace Enginn
 
     public static void SynthesisWizard()
     {
-
-      // Get existing open window or if none, make a new one
       SynthesisWizardWindow window = (SynthesisWizardWindow)EditorWindow.GetWindow(
         typeof(SynthesisWizardWindow)
       );
       window.Show();
     }
 
-    public static void NewCharacterSynthesis()
+    public static void NewCharacterSynthesis(CharacterSynthesis model = null)
     {
-
-      // Get existing open window or if none, make a new one
       NewCharacterSynthesisWindow window = (NewCharacterSynthesisWindow)EditorWindow.GetWindow(
         typeof(NewCharacterSynthesisWindow)
       );
-      window.FetchCharacters();
+      window.FetchData();
+      if (model != null)
+      {
+        window.SetCharacterSynthesis(model);
+      }
       window.Show();
     }
 
     public static void SynthesisHistory()
     {
-
-      // Get existing open window or if none, make a new one
       SynthesisHistoryWindow window = (SynthesisHistoryWindow)EditorWindow.GetWindow(
         typeof(SynthesisHistoryWindow)
       );
@@ -86,7 +74,6 @@ namespace Enginn
 
     public static void ListTexts()
     {
-      // Get existing open window or if none, make a new one
       ListTextsWindow window = (ListTextsWindow)EditorWindow.GetWindow(
         typeof(ListTextsWindow)
       );

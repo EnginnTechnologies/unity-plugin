@@ -106,7 +106,12 @@ namespace Enginn
           EditorGUILayout.EndVertical();
 
           GUILayout.BeginVertical(GUILayout.Width(widths[7]));
-
+          BeginCenter();
+          if (GUILayout.Button("Resynthesize", GUILayout.ExpandWidth(false)))
+          {
+            Resynthesize(text);
+          }
+          EndCenter();
           EditorGUILayout.EndVertical();
 
           EndTableRow();
@@ -116,17 +121,6 @@ namespace Enginn
       EditorGUILayout.EndVertical();
 
       EndCenter();
-    }
-
-    private void PlayMain(Text text)
-    {
-      PlayLocalAudio(text.GetMainResultFileAbsolutePath());
-    }
-
-    private void DownloadMain(Text text)
-    {
-      text.DownloadMainResultFile();
-      AssetDatabase.Refresh();
     }
 
     protected override void OnGUIButtons()
@@ -154,6 +148,28 @@ namespace Enginn
       Project.FetchCharacters();
       texts = Api.GetTexts();
     }
+
+    private void PlayMain(Text text)
+    {
+      PlayLocalAudio(text.GetMainResultFileAbsolutePath());
+    }
+
+    private void DownloadMain(Text text)
+    {
+      text.DownloadMainResultFile();
+      AssetDatabase.Refresh();
+    }
+
+    private void Resynthesize(Text text)
+    {
+      CharacterSynthesis newCharacterSynthesis = new CharacterSynthesis();
+      newCharacterSynthesis.text = text.main_synthesis_text;
+      newCharacterSynthesis.modifier = text.main_synthesis_modifier;
+      newCharacterSynthesis.character_id = text.main_character_id;
+      newCharacterSynthesis.text_slug = text.slug;
+      Router.NewCharacterSynthesis(newCharacterSynthesis);
+    }
+
   }
 
 }
