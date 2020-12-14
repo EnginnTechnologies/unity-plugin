@@ -12,13 +12,18 @@ namespace Enginn
     public const string RESULT_PATH = "Assets/EnginnResults";
 
     public int id;
-    public string modifier = Synthesis.Modifier.None;
+    public bool is_main;
+
+    public int text_id;
     public string text_slug;
-    public string text;
-    public string created_at;
+
     public int character_id;
+    public string character_name;
+
     public int synthesis_id;
+    public string synthesis_modifier = Synthesis.Modifier.None;
     public string synthesis_result_file_url;
+    public string synthesis_text;
 
     private int importFileLine;
 
@@ -47,9 +52,19 @@ namespace Enginn
       return importFileLine;
     }
 
-    public string GetModifierName()
+    public string GetSynthesisModifierName()
     {
-      return Synthesis.GetModifierName(modifier);
+      return Synthesis.GetModifierName(synthesis_modifier);
+    }
+
+    public bool MainResultFileExists()
+    {
+      return ResultFile.Exists(text_slug);
+    }
+
+    public string GetResultFileAbsolutePath()
+    {
+      return ResultFile.GetAbsolutePath(text_slug);
     }
 
   }

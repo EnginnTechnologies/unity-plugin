@@ -53,8 +53,8 @@ namespace Enginn
       // TEXT
       BeginCenteredFormField();
       FormLabel("Text");
-      characterSynthesis.text = FormTextField(
-        characterSynthesis.text,
+      characterSynthesis.synthesis_text = FormTextField(
+        characterSynthesis.synthesis_text,
         400
       );
       EndCenter();
@@ -62,8 +62,8 @@ namespace Enginn
       // MODIFIER
       BeginCenteredFormField();
       FormLabel("Modifier");
-      characterSynthesis.modifier = FormModifierField(
-        characterSynthesis.modifier,
+      characterSynthesis.synthesis_modifier = FormModifierField(
+        characterSynthesis.synthesis_modifier,
         400
       );
       EndCenter();
@@ -118,7 +118,7 @@ namespace Enginn
         ) && (
           !String.IsNullOrEmpty(characterSynthesis.text_slug)
         ) && (
-          !String.IsNullOrEmpty(characterSynthesis.text)
+          !String.IsNullOrEmpty(characterSynthesis.synthesis_text)
         )
       );
     }

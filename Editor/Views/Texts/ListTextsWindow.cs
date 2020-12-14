@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-// using System.Drawing;
 using UnityEngine;
 using UnityEditor;
 
@@ -111,6 +110,11 @@ namespace Enginn
           {
             Resynthesize(text);
           }
+          GUILayout.Space(10);
+          if (GUILayout.Button("History", GUILayout.ExpandWidth(false)))
+          {
+            ViewHistory(text);
+          }
           EndCenter();
           EditorGUILayout.EndVertical();
 
@@ -163,11 +167,16 @@ namespace Enginn
     private void Resynthesize(Text text)
     {
       CharacterSynthesis newCharacterSynthesis = new CharacterSynthesis();
-      newCharacterSynthesis.text = text.main_synthesis_text;
-      newCharacterSynthesis.modifier = text.main_synthesis_modifier;
+      newCharacterSynthesis.synthesis_text = text.main_synthesis_text;
+      newCharacterSynthesis.synthesis_modifier = text.main_synthesis_modifier;
       newCharacterSynthesis.character_id = text.main_character_id;
       newCharacterSynthesis.text_slug = text.slug;
       Router.NewCharacterSynthesis(newCharacterSynthesis);
+    }
+
+    private void ViewHistory(Text text)
+    {
+      Router.SynthesisHistory(text);
     }
 
   }

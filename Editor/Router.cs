@@ -62,11 +62,16 @@ namespace Enginn
       window.Show();
     }
 
-    public static void SynthesisHistory()
+    public static void SynthesisHistory(Text filterText = null)
     {
       SynthesisHistoryWindow window = (SynthesisHistoryWindow)EditorWindow.GetWindow(
         typeof(SynthesisHistoryWindow)
       );
+      if (filterText != null)
+      {
+        window.SetFilterText(filterText);
+      }
+      window.FetchData();
       window.Show();
     }
 

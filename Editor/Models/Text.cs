@@ -27,9 +27,6 @@ namespace Enginn
 
     public string slug;
 
-    public string created_at;
-    public string updated_at;
-
     public string GetMainSynthesisModifierName()
     {
       return Synthesis.GetModifierName(main_synthesis_modifier);

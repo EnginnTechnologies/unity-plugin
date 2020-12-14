@@ -191,8 +191,8 @@ namespace Enginn
             characterSynthesis.GetImportFileLine().ToString(),
             characterSynthesis.text_slug,
             characterName,
-            characterSynthesis.text,
-            characterSynthesis.GetModifierName()
+            characterSynthesis.synthesis_text,
+            characterSynthesis.GetSynthesisModifierName()
           };
           TableBodyRow(values, widths);
         }
@@ -505,8 +505,8 @@ namespace Enginn
         }
 
         CharacterSynthesis characterSynthesis = new CharacterSynthesis();
-        characterSynthesis.text = line["text"];
-        characterSynthesis.modifier = line["modifier"];
+        characterSynthesis.synthesis_text = line["text"];
+        characterSynthesis.synthesis_modifier = line["modifier"];
         characterSynthesis.character_id = int.Parse(line["character_id"]);
         characterSynthesis.text_slug = line["slug"];
         characterSynthesis.SetImportFileLine(line_idx);

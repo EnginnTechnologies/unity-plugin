@@ -19,8 +19,6 @@ namespace Enginn
     public string pitch;
     public string age;
     public bool is_nasal;
-    public string created_at;
-    public string updated_at;
     public int project_id;
 
     private Texture2D avatar_texture;

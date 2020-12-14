@@ -99,6 +99,18 @@ namespace Enginn
     // CHARACTER SYNTHESES
     //-------------------------------------------------------------------------
 
+    public static CharacterSynthesis[] GetCharacterSyntheses(Text filterText = null)
+    {
+      var uri = $"{GetApiBaseUrl()}/character_syntheses";
+      if (filterText != null)
+      {
+        uri = $"{uri}?by_text_id={filterText.id}";
+      }
+      var response = NewClient().DownloadString(uri);
+      return JsonUtility.FromJson<ApiResponse<CharacterSynthesis[]>>(response).result;
+
+    }
+
     public static void CreateCharacterSynthesis(CharacterSynthesis characterSynthesis) {
       var payload = "{\"character_synthesis\": " + JsonUtility.ToJson(characterSynthesis) + "}";
       var response = NewClient().UploadString($"{GetApiBaseUrl()}/character_syntheses", payload);

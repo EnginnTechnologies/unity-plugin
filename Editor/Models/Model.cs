@@ -1,4 +1,4 @@
-﻿// using System;
+﻿using System;
 using System.Collections.Generic;
 // using System.IO;
 // using System.Net;
@@ -9,6 +9,9 @@ namespace Enginn
 
   public class Model
   {
+
+    public string created_at;
+    public string updated_at;
 
     protected Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
 
@@ -43,6 +46,16 @@ namespace Enginn
         result += string.Format("\n\"{0}\": [{1}]", error.Key, string.Join(",", error.Value));
       }
       return result;
+    }
+
+    public string GetCreatedAt(string format = "g")
+    {
+      return DateTime.Parse(created_at).ToString(format);
+    }
+
+    public string GetUpdatedAt(string format = "g")
+    {
+      return DateTime.Parse(updated_at).ToString(format);
     }
 
   }
