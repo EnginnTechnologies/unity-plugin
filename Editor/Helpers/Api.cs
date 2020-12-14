@@ -120,6 +120,7 @@ namespace Enginn
         case 201:
           characterSynthesis.id = apiResponse.result.id;
           characterSynthesis.created_at = apiResponse.result.created_at;
+          characterSynthesis.text_id = apiResponse.result.text_id;
           characterSynthesis.synthesis_id = apiResponse.result.synthesis_id;
           characterSynthesis.synthesis_result_file_url = apiResponse.result.synthesis_result_file_url;
           break;

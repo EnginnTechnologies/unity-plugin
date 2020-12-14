@@ -130,6 +130,7 @@ namespace Enginn
         if(characterSynthesis.DownloadResultFile())
         {
           AssetDatabase.Refresh();
+          Router.ShowText(characterSynthesis.text_id);
           Close();
         } else {
           Debug.LogError("result file couldn't be downloaded");

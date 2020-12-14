@@ -70,6 +70,7 @@ namespace Enginn
       if (GUILayout.Button("Resynthesize", GUILayout.ExpandWidth(false)))
       {
         Resynthesize();
+        Close();
       }
       GUILayout.EndHorizontal();
 

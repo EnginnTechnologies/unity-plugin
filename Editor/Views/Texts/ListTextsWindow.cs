@@ -62,7 +62,7 @@ namespace Enginn
         200,
         100,
         60,
-        150
+        80
       };
 
       TableHeaderRow(headers, widths);
@@ -117,11 +117,6 @@ namespace Enginn
 
           GUILayout.BeginVertical(GUILayout.Width(widths[7]));
           BeginCenter();
-          if (GUILayout.Button("Resynthesize", GUILayout.ExpandWidth(false)))
-          {
-            Resynthesize(text);
-          }
-          GUILayout.Space(10);
           if (GUILayout.Button("View", GUILayout.ExpandWidth(false)))
           {
             View(text);
@@ -175,16 +170,6 @@ namespace Enginn
       AssetDatabase.Refresh();
     }
 
-    private void Resynthesize(Text text)
-    {
-      CharacterSynthesis newCharacterSynthesis = new CharacterSynthesis();
-      newCharacterSynthesis.synthesis_text = text.main_synthesis_text;
-      newCharacterSynthesis.synthesis_modifier = text.main_synthesis_modifier;
-      newCharacterSynthesis.character_id = text.main_character_id;
-      newCharacterSynthesis.text_slug = text.slug;
-      Router.NewCharacterSynthesis(newCharacterSynthesis);
-    }
-
     private void ViewHistory(Text text)
     {
       Router.SynthesisHistory(text);
@@ -192,7 +177,8 @@ namespace Enginn
 
     private void View(Text text)
     {
-      Router.ShowText(text);
+      Router.ShowText(text.id);
+      Close();
     }
 
   }
