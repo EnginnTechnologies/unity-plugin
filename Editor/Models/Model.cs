@@ -48,16 +48,6 @@ namespace Enginn
       return result;
     }
 
-    public string GetCreatedAt(string format = "g")
-    {
-      return DateTime.Parse(created_at).ToString(format);
-    }
-
-    public string GetUpdatedAt(string format = "g")
-    {
-      return DateTime.Parse(updated_at).ToString(format);
-    }
-
   }
 
 }

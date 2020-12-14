@@ -70,7 +70,10 @@ namespace Enginn
         {
           BeginTableRow();
 
-          TableBodyCell(characterSynthesis.GetCreatedAt(), widths[0]);
+          TableBodyCell(
+            FormatDate(characterSynthesis.created_at),
+            widths[0]
+          );
           TableBodyCell(characterSynthesis.text_slug, widths[1]);
           TableBodyCell(
             characterSynthesis.is_main ? "★" : "",

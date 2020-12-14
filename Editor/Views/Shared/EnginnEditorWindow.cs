@@ -401,6 +401,11 @@ namespace Enginn
       EditorGUILayout.EndVertical();
     }
 
+    public string FormatDate(string dt, string format = "g")
+    {
+      return String.IsNullOrEmpty(dt) ? "" : DateTime.Parse(dt).ToString(format);
+    }
+
     //-------------------------------------------------------------------------
     // AUDIO
     //-------------------------------------------------------------------------

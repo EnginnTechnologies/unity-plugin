@@ -84,6 +84,13 @@ namespace Enginn
       window.Show();
     }
 
+    public static void ShowText(Text text)
+    {
+      ShowTextWindow window = new ShowTextWindow(text.id);
+      window.FetchData();
+      window.Show();
+    }
+
   }
 
 }

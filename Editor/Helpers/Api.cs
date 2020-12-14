@@ -99,16 +99,15 @@ namespace Enginn
     // CHARACTER SYNTHESES
     //-------------------------------------------------------------------------
 
-    public static CharacterSynthesis[] GetCharacterSyntheses(Text filterText = null)
+    public static CharacterSynthesis[] GetCharacterSyntheses(Text filterText = null, int limit = 100)
     {
-      var uri = $"{GetApiBaseUrl()}/character_syntheses";
+      var uri = $"{GetApiBaseUrl()}/character_syntheses?per={limit}";
       if (filterText != null)
       {
-        uri = $"{uri}?by_text_id={filterText.id}";
+        uri = $"{uri}&by_text_id={filterText.id}";
       }
       var response = NewClient().DownloadString(uri);
       return JsonUtility.FromJson<ApiResponse<CharacterSynthesis[]>>(response).result;
-
     }
 
     public static void CreateCharacterSynthesis(CharacterSynthesis characterSynthesis) {
@@ -165,6 +164,12 @@ namespace Enginn
     public static Text[] GetTexts() {
       var response = NewClient().DownloadString($"{GetApiBaseUrl()}/texts");
       return JsonUtility.FromJson<ApiResponse<Text[]>>(response).result;
+    }
+
+    public static Text GetText(int text_id)
+    {
+      var response = NewClient().DownloadString($"{GetApiBaseUrl()}/texts/{text_id}");
+      return JsonUtility.FromJson<ApiResponse<Text>>(response).result;
     }
 
     public static void UpdateText(Text text) {

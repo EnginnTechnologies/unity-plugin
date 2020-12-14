@@ -124,7 +124,7 @@ namespace Enginn
           GUILayout.Space(10);
           if (GUILayout.Button("View", GUILayout.ExpandWidth(false)))
           {
-            // TODO
+            View(text);
           }
           EndCenter();
           EditorGUILayout.EndVertical();
@@ -188,6 +188,11 @@ namespace Enginn
     private void ViewHistory(Text text)
     {
       Router.SynthesisHistory(text);
+    }
+
+    private void View(Text text)
+    {
+      Router.ShowText(text);
     }
 
   }
