@@ -510,6 +510,15 @@ namespace Enginn
         characterSynthesis.character_id = int.Parse(line["character_id"]);
         characterSynthesis.text_slug = line["slug"];
         characterSynthesis.SetImportFileLine(line_idx);
+
+        // synthesis line
+        if (!characters.ContainsKey(characterSynthesis.character_id))
+        {
+          Debug.LogError($"Unknown character widht ID {line["character_id"]} on line {line_idx}");
+          importFileErrors.Add($"Unknown character widht ID {line["character_id"]} on line {line_idx}");
+          return;
+        }
+
         characterSyntheses.Add(characterSynthesis);
       }
     }
