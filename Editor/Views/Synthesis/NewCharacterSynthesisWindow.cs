@@ -35,7 +35,10 @@ namespace Enginn
       // SLUG
       BeginCenteredFormField();
       FormLabel("Slug");
-      characterSynthesis.text_slug = FormTextField(characterSynthesis.text_slug);
+      characterSynthesis.text_slug = FormTextField(
+        characterSynthesis.text_slug,
+        400
+      );
       EndCenter();
 
       // CHARACTER
@@ -43,14 +46,17 @@ namespace Enginn
       FormLabel("Character");
       characterSynthesis.character_id = FormCharacterIdField(
         characterSynthesis.character_id,
-        200
+        400
       );
       EndCenter();
 
       // TEXT
       BeginCenteredFormField();
       FormLabel("Text");
-      characterSynthesis.text = FormTextField(characterSynthesis.text);
+      characterSynthesis.text = FormTextField(
+        characterSynthesis.text,
+        400
+      );
       EndCenter();
 
       // MODIFIER
@@ -58,7 +64,7 @@ namespace Enginn
       FormLabel("Modifier");
       characterSynthesis.modifier = FormModifierField(
         characterSynthesis.modifier,
-        200
+        400
       );
       EndCenter();
 

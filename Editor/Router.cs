@@ -53,9 +53,7 @@ namespace Enginn
 
     public static void NewCharacterSynthesis(CharacterSynthesis model = null)
     {
-      NewCharacterSynthesisWindow window = (NewCharacterSynthesisWindow)EditorWindow.GetWindow(
-        typeof(NewCharacterSynthesisWindow)
-      );
+      NewCharacterSynthesisWindow window = new NewCharacterSynthesisWindow();
       window.FetchData();
       if (model != null)
       {
