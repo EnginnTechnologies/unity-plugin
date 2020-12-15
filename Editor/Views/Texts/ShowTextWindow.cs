@@ -238,9 +238,9 @@ namespace Enginn
 
     protected override void OnGUIButtons()
     {
-      if(GUILayout.Button("Close", GUILayout.Width(100)))
+      if(GUILayout.Button("< Back", GUILayout.Width(100)))
       {
-        Close();
+        Back();
       }
 
       GUILayout.Space(50);
@@ -289,6 +289,12 @@ namespace Enginn
         FetchData();
         DownloadMain();
       }
+    }
+
+    private void Back()
+    {
+      Router.ListTexts();
+      Close();
     }
 
     private void ViewHistory()
