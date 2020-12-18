@@ -38,7 +38,12 @@ namespace Enginn
       {
         return RESULT_PATH;
       } else {
-        return $"{RESULT_PATH}/{slug}.wav";
+		var fileName = String.Copy(slug);
+		foreach (var c in Path.GetInvalidFileNameChars())
+		{
+		  fileName = fileName.Replace(c, '-');
+		}
+        return $"{RESULT_PATH}/{fileName}.wav";
       }
     }
     public string GetPath()
