@@ -65,6 +65,8 @@ public class fgCSVReader
                 // ignore it completely
                 break;
             case ',':
+			case ';':
+			case '\t':
                 goto case '\n';
             case '\n':
                 if (inside_quotes)
