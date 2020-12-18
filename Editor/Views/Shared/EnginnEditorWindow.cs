@@ -144,6 +144,16 @@ namespace Enginn
       );
     }
 
+    public void FormFieldHint(string text, int width = 150)
+    {
+      GUILayout.Space(5);
+      EditorGUILayout.LabelField(
+        text,
+        FormLabelStyle(),
+        GUILayout.Width(width)
+      );
+    }
+
     public int FormRadio(int selected, string[] texts, int width = 400)
     {
       GUIStyle radioStyle = new GUIStyle(EditorStyles.radioButton);

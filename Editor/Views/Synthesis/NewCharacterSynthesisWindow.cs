@@ -35,10 +35,13 @@ namespace Enginn
       // SLUG
       BeginCenteredFormField();
       FormLabel("Slug");
+      EditorGUILayout.BeginVertical();
       characterSynthesis.text_slug = FormTextField(
         characterSynthesis.text_slug,
         400
       );
+      FormFieldHint("Only use letters, digits, ., _ or -", 400);
+      EditorGUILayout.EndVertical();
       EndCenter();
 
       // CHARACTER
