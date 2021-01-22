@@ -440,6 +440,9 @@ namespace Enginn
     protected async void PlayRemoteAudio(string url)
     {
       // Debug.Log($"play remote audio {url}");
+      if (!CheckAudioAvailable()){
+        return;
+      }
       AudioSource audioPlayer = GetAudioPlayer();
       audioPlayer.clip = await Api.LoadAudioClip(url);
       audioPlayer.Play();
@@ -449,9 +452,26 @@ namespace Enginn
     protected async void PlayLocalAudio(string path)
     {
       // Debug.Log($"play local audio {path}");
+      if (!CheckAudioAvailable()){
+        return;
+      }
       AudioSource audioPlayer = GetAudioPlayer();
       audioPlayer.clip = await Api.LoadAudioClip("file://" + path);
       audioPlayer.Play();
+    }
+
+    protected bool CheckAudioAvailable()
+    {
+      if (EditorUtility.audioMasterMute)
+      {
+        EditorUtility.DisplayDialog(
+          "Game audio is muted",
+          "Please unmute game audio to be able to listen to this.",
+          "OK"
+        );
+        return false;
+      }
+      return true;
     }
 
   }

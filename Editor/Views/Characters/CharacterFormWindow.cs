@@ -236,6 +236,10 @@ namespace Enginn
         return;
       }
 
+      if (!CheckAudioAvailable()){
+        return;
+      }
+
       textBeingTested = textIndex;
       string text = testTexts[textIndex];
       TestSynthesis testSynthesis = new TestSynthesis(character, text);
