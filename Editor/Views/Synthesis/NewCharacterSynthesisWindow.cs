@@ -40,7 +40,7 @@ namespace Enginn
         characterSynthesis.text_slug,
         400
       );
-      FormFieldHint("Only use letters, digits, ., _ or -", 400);
+      FormFieldHint("Only use letters, digits or these special chars: . _ - + $", 400);
       EditorGUILayout.EndVertical();
       EndCenter();
 
