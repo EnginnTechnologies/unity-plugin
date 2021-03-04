@@ -449,10 +449,11 @@ namespace Enginn
 
     private Character FindCharacter(string idOrName)
     {
-      int character_id = int.Parse(idOrName);
+      int character_id;
+      bool isId = int.TryParse(idOrName, out character_id);
       foreach (KeyValuePair<int, Character> entry in characters)
       {
-        if ((entry.Key == character_id) || (entry.Value.name == idOrName))
+        if ((entry.Value.name == idOrName) || (isId && (entry.Key == character_id)))
         {
           return entry.Value;
         }
