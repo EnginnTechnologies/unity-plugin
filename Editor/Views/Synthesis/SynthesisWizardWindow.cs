@@ -447,6 +447,20 @@ namespace Enginn
       }
     }
 
+    private Character FindCharacter(string idOrName)
+    {
+      int character_id;
+      bool isId = int.TryParse(idOrName, out character_id);
+      foreach (KeyValuePair<int, Character> entry in characters)
+      {
+        if ((entry.Value.name == idOrName) || (isId && (entry.Key == character_id)))
+        {
+          return entry.Value;
+        }
+      }
+      return null;
+    }
+
     private void ReadImportFile()
     {
       if(importFileRead)
@@ -504,21 +518,23 @@ namespace Enginn
           }
         }
 
-        CharacterSynthesis characterSynthesis = new CharacterSynthesis();
-        characterSynthesis.synthesis_text = line["text"];
-        characterSynthesis.synthesis_modifier = line["modifier"];
-        characterSynthesis.character_id = int.Parse(line["character_id"]);
-        characterSynthesis.text_slug = line["slug"];
-        characterSynthesis.SetImportFileLine(line_idx);
-
-        // synthesis line
-        if (!characters.ContainsKey(characterSynthesis.character_id))
+        // find character
+        Character character = FindCharacter(line["character_id"]);
+        if (character == null)
         {
-          Debug.LogError($"Unknown character widht ID {line["character_id"]} on line {line_idx}");
-          importFileErrors.Add($"Unknown character widht ID {line["character_id"]} on line {line_idx}");
+          string error = $"Unknown character with ID or name {line["character_id"]} on line {line_idx}";
+          Debug.LogError(error);
+          importFileErrors.Add(error);
           return;
         }
 
+        // synthesis line
+        CharacterSynthesis characterSynthesis = new CharacterSynthesis();
+        characterSynthesis.synthesis_text = line["text"];
+        characterSynthesis.synthesis_modifier = line["modifier"];
+        characterSynthesis.character_id = character.id;
+        characterSynthesis.text_slug = line["slug"];
+        characterSynthesis.SetImportFileLine(line_idx);
         characterSyntheses.Add(characterSynthesis);
       }
     }
