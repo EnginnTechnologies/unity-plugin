@@ -554,21 +554,34 @@ namespace Enginn
       exportStarted = true;
       exportErrors = new List<string>();
 
-      var synthesisTasks = new List<Task>();
+      // SEQUENTIAL VERSION (OK BUT SLOW)
+
       int synthesis_idx = 0;
       foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
       {
-        synthesisTasks.Add(PerformSynthesis(synthesis_idx));
+        await PerformSynthesis(synthesis_idx);
+        exportProgress = (1 + synthesis_idx) / ((float) characterSyntheses.Count);
+        Repaint();
         synthesis_idx++;
       }
 
-      while (synthesisTasks.Count > 0)
-      {
-        Task finishedTask = await Task.WhenAny(synthesisTasks);
-        synthesisTasks.Remove(finishedTask);
-        exportProgress = (characterSyntheses.Count - synthesisTasks.Count) / ((float) characterSyntheses.Count);
-        Repaint();
-      }
+      // PARALLEL VERSION (TOO MANY REQUESTS)
+
+      // var synthesisTasks = new List<Task>();
+      // int synthesis_idx = 0;
+      // foreach (CharacterSynthesis characterSynthesis in characterSyntheses)
+      // {
+      //   synthesisTasks.Add(PerformSynthesis(synthesis_idx));
+      //   synthesis_idx++;
+      // }
+
+      // while (synthesisTasks.Count > 0)
+      // {
+      //   Task finishedTask = await Task.WhenAny(synthesisTasks);
+      //   synthesisTasks.Remove(finishedTask);
+      //   exportProgress = (characterSyntheses.Count - synthesisTasks.Count) / ((float) characterSyntheses.Count);
+      //   Repaint();
+      // }
 
       // done
       AssetDatabase.Refresh();
@@ -590,7 +603,7 @@ namespace Enginn
             {
               if(characterSynthesis.DownloadResultFile())
               {
-                // Debug.Log("result file created");
+                Logger.Log("Synthesis done");
               } else {
                 Debug.LogError("result file couldn't be downloaded");
                 exportErrors.Add($"Audio file for {characterSynthesis.text_slug} couldn't be downloaded");

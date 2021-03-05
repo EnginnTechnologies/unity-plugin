@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -247,11 +246,8 @@ namespace Enginn
       }
     }
 
-    private static WebClient NewClient() {
-      var client = new WebClient();
-      client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
-      client.Headers.Add("Authorization", $"Bearer {GetProjectApiToken()}");
-      return client;
+    private static ApiClient NewClient() {
+      return new ApiClient(GetProjectApiToken());
     }
 
     private static string apiBaseUrl = null;
